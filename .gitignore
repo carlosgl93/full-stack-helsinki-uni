@@ -8,6 +8,10 @@
 ./part2/courseinfo/node_modules
 ./part2/part2-notes/node_modules
 ./part2/phonebook/node_modules
+./part2/countries/node_modules
+./part3/first-server/node_modules
+
+
 
 
 
