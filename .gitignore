@@ -10,6 +10,10 @@
 ./part2/phonebook/node_modules
 ./part2/countries/node_modules
 ./part3/first-server/node_modules
+./part4/.env
+./part4/node_modules
+part4/node_modules
+part4/.env
 
 
 
