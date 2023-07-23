@@ -36,7 +36,7 @@ const App = () => {
           setPersons(persons.filter((p) => p.id !== id));
         })
         .catch((error) => {
-          setError(error.message);
+          setError(`There was an error removing this contact ${error.message}`);
           setTimeout(() => {
             setError("");
           }, 2500);
@@ -57,13 +57,52 @@ const App = () => {
         }, 2500);
       })
       .catch((error) => {
-        setError(error.message);
+        if (error.message === "Request failed with status code 400") {
+          setError(
+            "Verify that the name is longer than 2 characters or the phone number is longer than 5 numbers. Make sure the phone number is valid"
+          );
+        } else {
+          setError(error.message);
+        }
         setTimeout(() => {
           setError("");
         }, 2500);
       });
     setNewName("");
     setNewNumber("");
+  };
+
+  const updateContact = (id, updatedContact) => {
+    personsServices
+      .update(id, updatedContact)
+      .then((updatedPerson) => {
+        const filteredPersons = persons.filter(
+          (p) => p.id !== updatedPerson.id
+        );
+        setPersons(() => filteredPersons.concat(updatedPerson));
+        setSuccess("Contact updated successfully!");
+        setTimeout(() => {
+          setSuccess("");
+        }, 2500);
+        return;
+      })
+      .catch((error) => {
+        console.log(error);
+        if (error.message === "Request failed with status code 400") {
+          setError(
+            setError(
+              "Verify that the name is longer than 2 characters or the phone number is longer than 5 numbers. Make sure the phone number is valid"
+            )
+          );
+        } else {
+          setError(error.message);
+        }
+        setTimeout(() => {
+          setError("");
+        }, 2500);
+        return;
+      });
+    return;
   };
 
   const handleNameChange = (event) => {
@@ -96,24 +135,8 @@ const App = () => {
         number: newNumber,
       };
 
-      personsServices
-        .update(alreadyExistingPerson.id, updatePerson)
-        .then((updatedPerson) => {
-          const filteredPersons = persons.filter(
-            (p) => p.id !== updatedPerson.id
-          );
-          setPersons(filteredPersons.concat(updatedPerson));
-          setSuccess("Contact updated successfully!");
-          setTimeout(() => {
-            setSuccess("");
-          }, 2500);
-        })
-        .catch((error) => {
-          setError(error.message);
-          setTimeout(() => {
-            setError("");
-          }, 2500);
-        });
+      updateContact(alreadyExistingPerson.id, updatePerson);
+      return;
     }
 
     const newPerson = {
