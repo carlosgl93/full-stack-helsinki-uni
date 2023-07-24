@@ -4,9 +4,9 @@
   "description": "Exercises from part4",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "test": "jest --verbose"
   },
   "author": "Carlos Gumucio",
   "license": "ISC",
@@ -25,5 +25,8 @@
     "eslint-plugin-n": "^15.7.0",
     "eslint-plugin-promise": "^6.1.1",
     "nodemon": "^3.0.1"
+  },
+  "jest": {
+    "testEnvironment": "node"
   }
 }
