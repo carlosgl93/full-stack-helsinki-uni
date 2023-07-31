@@ -163,6 +163,7 @@ describe("general", () => {
   });
 });
 
-afterAll(async () => {
-  await mongoose.connection.close();
+afterAll(() => {
+  mongoose.connection.close();
+  done();
 });

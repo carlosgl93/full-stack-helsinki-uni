@@ -12,9 +12,11 @@
 ./part3/first-server/node_modules
 ./part4/.env
 ./part4/node_modules
-part4/node_modules
-part4/.env
-
+part4/blogs-back/node_modules
+part4/blogs-back/.env
+part4/blogs-back/src/node_modules
+./part4/blogs-back/.env
+*/nodemo
 
 
 
@@ -41,3 +43,4 @@ part4/.env
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+part4/blogs-back/.env

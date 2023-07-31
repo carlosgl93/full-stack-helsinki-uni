@@ -1,10 +1,15 @@
+const jwt = require("jsonwebtoken");
 const blogRouter = require("express").Router();
 const Blog = require("../models/blog");
+const User = require("../models/user");
 const { populateBlogs, validateId } = require("../utils/list_helper");
 
 blogRouter.get("/", async (request, response) => {
-  const allBlogs = await Blog.find({});
-  response.json(allBlogs);
+  const allBlogs = await Blog.find({}).populate("user", {
+    username: 1,
+    name: 1,
+  });
+  response.json(allBlogs).end();
 });
 
 blogRouter.get("/:id", async (request, response) => {
@@ -27,19 +32,61 @@ blogRouter.delete("/remove", async (req, res) => {
 });
 
 blogRouter.delete("/:id", async (request, response) => {
-  const deleted = await Blog.findByIdAndDelete(request.params.id);
-  response.json(deleted).status(204);
+  const { id } = request.params;
+
+  const user = request.user;
+  const blogToDelete = await Blog.findById(id);
+  console.log("ID", id);
+
+  console.log("USER DELETING", user);
+  console.log("Blog to delete", blogToDelete);
+
+  if (blogToDelete.user === user._id.toString()) {
+    const deleted = await Blog.findByIdAndDelete(id);
+    response.json(deleted).end();
+    return;
+  }
+
+  response
+    .status(401)
+    .send({
+      message: "only the owner of the blog can delete this blog",
+    })
+    .end();
 });
 
 blogRouter.post("/", async (request, response) => {
-  const blog = new Blog(request.body);
-
-  if (!blog.title || !blog.url) {
-    response.status(400).end();
+  const newBlog = request.body;
+  if (!newBlog.title || !newBlog.url) {
+    response
+      .status(400)
+      .send({
+        error: "blog malformed",
+      })
+      .end();
   }
 
+  const user = request.user;
+
+  if (!user)
+    response
+      .status(404)
+      .send({
+        error: "user not found",
+      })
+      .end();
+
+  const blog = new Blog({
+    ...newBlog,
+    user: user.id,
+    author: user.name,
+  });
+
   const result = await blog.save();
-  response.status(201).json(result);
+  user.blogs = user.blogs.concat(result._id);
+
+  await user.save();
+  response.status(201).json(result).end();
 });
 
 blogRouter.post("/seed", async (req, res) => {
@@ -64,23 +111,6 @@ blogRouter.put("/:id", async (req, res) => {
   });
 
   res.json(result);
-
-  // const { id } = req.params;
-  // console.log("id", id);
-
-  // const blogToUpdate = await Blog.findById(id);
-  // // const newLikes = blogToUpdate
-  // console.log("BLOG TO UPDATE", blogToUpdate);
-
-  // const updatedBlog = {
-  //   ...blogToUpdate,
-  //   likes: blogToUpdate.likes + 1,
-  // };
-
-  // console.log("UPDATED BLOG", updatedBlog);
-
-  // const updated = await Blog.findOneAndReplace(id, updatedBlog, { new: true });
-  // res.status(200).json(updated);
 });
 
 module.exports = blogRouter;
