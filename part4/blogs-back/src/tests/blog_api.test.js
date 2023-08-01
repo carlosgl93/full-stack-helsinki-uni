@@ -2,6 +2,7 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
 const Blog = require("../models/blog");
+const User = require("../models/user");
 const helper = require("./test_helper");
 
 const { initialBlogs, nonExistingId, blogsInDb } = helper;
@@ -19,7 +20,7 @@ beforeEach(async () => {
   await Promise.all(promiseArray);
 });
 
-describe("when there is initially some notes saved", () => {
+describe("when there is initially some blogs saved", () => {
   test("results are returned in json", async () => {
     await api
       .get("/api/blogs")
@@ -66,15 +67,21 @@ describe("viewing a specific blog", () => {
 
 describe("addition of a new blog", () => {
   test("add a blog with valid data", async () => {
+    const login = await api.post("/api/login").send({
+      username: "admin",
+      password: "admin123",
+    });
+
     const newBlog = {
       title: "Adding new blog to test",
       author: "Carlos",
-      url: "localhost:3000",
+      url: `localhost:3000/${new Date()}`,
       likes: "99",
     };
 
     await api
       .post("/api/blogs")
+      .set("Authorization", "Bearer " + login.body.token)
       .send(newBlog)
       .expect(201)
       .expect("Content-Type", /application\/json/);
@@ -88,20 +95,38 @@ describe("addition of a new blog", () => {
   });
 
   test("reject blog without artist and url", async () => {
+    const login = await api.post("/api/login").send({
+      username: "admin",
+      password: "admin123",
+    });
+
     const newBadBlog = {
       author: "casdf",
       likes: 0,
     };
 
-    await api.post("/api/blogs").send(newBadBlog).expect(400);
+    await api
+      .post("/api/blogs")
+      .set("Authorization", "Bearer " + login.body.token)
+      .send(newBadBlog)
+      .expect(400);
   });
 
   test("reject malformed blog", async () => {
+    const login = await api.post("/api/login").send({
+      username: "admin",
+      password: "admin123",
+    });
+
     const newBadBlog = {
       title: "this shouldnt be saved",
     };
 
-    await api.post("/api/blogs").send(newBadBlog).expect(400);
+    await api
+      .post("/api/blogs")
+      .set("Authorization", "Bearer " + login.body.token)
+      .send(newBadBlog)
+      .expect(400);
 
     const blogsAtEnd = await blogsInDb();
 
@@ -123,22 +148,54 @@ describe("update a blog", () => {
 
 describe("delete a blog", () => {
   test("delete a blog", async () => {
-    const initialBlogs = await blogsInDb();
+    const login = await api.post("/api/login").send({
+      username: "admin",
+      password: "admin123",
+    });
 
-    const specificBlog = initialBlogs[0];
+    const { token, username } = login.body;
 
-    const res = await api.delete(`/api/blogs/${specificBlog.id}`);
-    const deletedBlog = res.body;
+    const newBlogToDelete = {
+      title: "This will be deleted",
+      author: username,
+      url: new Date(),
+    };
 
-    const endBlogs = await blogsInDb();
+    const addingNewBlogToDeleteLater = await api
+      .post("/api/blogs")
+      .set("Authorization", "Bearer " + token)
+      .send(newBlogToDelete)
+      .expect(201);
 
-    expect(endBlogs).toHaveLength(initialBlogs.length - 1);
-    expect(initialBlogs.find((b) => b.id === deletedBlog.id)).not.toBe(true);
-    expect(deletedBlog).toEqual(specificBlog);
+    console.log("RESULT OF ADDING NEW BLOG", addingNewBlogToDeleteLater.body);
+
+    const initialUserBlogs = await Blog.find({ username });
+
+    const deletingBlog = await api
+      .delete(`/api/blogs/${addingNewBlogToDeleteLater.body.id}`)
+      .set("Authorization", "Bearer " + token)
+      .expect(204);
+
+    const afterDeletingBlog = await Blog.findById(
+      addingNewBlogToDeleteLater.body.id
+    );
+
+    expect(afterDeletingBlog).toBe(null);
   });
 });
 
 describe("general", () => {
+  test("adding a new user", async () => {
+    await api
+      .post("/api/users")
+      .send({
+        username: "admin",
+        name: "Carlos",
+        password: "admin123",
+      })
+      .expect(201);
+  });
+
   test("_id to id", async () => {
     const result = await api.get("/api/blogs").expect(200);
     expect(result.body[0].id).toBeDefined();
@@ -163,7 +220,7 @@ describe("general", () => {
   });
 });
 
-afterAll(() => {
-  mongoose.connection.close();
-  done();
+afterAll(async () => {
+  await mongoose.connection.close();
+  // done();
 });

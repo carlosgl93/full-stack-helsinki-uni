@@ -47,9 +47,7 @@ const tokenExtractor = (request, response, next) => {
     request.token = authorization.replace("Bearer ", "");
     next();
   } else {
-    response.status(401).send({
-      error: "Token invalid",
-    });
+    next();
   }
 };
 

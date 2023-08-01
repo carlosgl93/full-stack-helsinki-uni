@@ -68,7 +68,7 @@ describe("initially there is one user", () => {
   });
 });
 
-describe("manipulating blog from user", async () => {});
+// describe("manipulating blog from user", async () => {});
 
 afterAll((done) => {
   mongoose.connection.close();
