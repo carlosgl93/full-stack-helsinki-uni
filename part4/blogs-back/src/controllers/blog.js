@@ -40,6 +40,7 @@ blogRouter.delete("/:id", userExtractor, async (request, response) => {
   console.log("USER DELETING", user);
 
   const blogToDelete = await Blog.findById(id);
+  console.log("user", user);
 
   console.log("BLOG TO DELETE", blogToDelete);
 
