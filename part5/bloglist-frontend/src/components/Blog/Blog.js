@@ -59,7 +59,7 @@ export const Blog = ({ blog, userId, handleLike, setNotification }) => {
       <p id="author">By: {blog.author}</p>
 
       {view && (
-        <div className="blogInfo">
+        <div className="blogInfo" data-cy="blogInfo">
           <p id="url">{blog.url}</p>
           <p id="likes" className="blogLikes">
             Likes: {blog.likes}

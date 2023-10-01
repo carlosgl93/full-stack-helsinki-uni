@@ -114,30 +114,30 @@ describe("Blog app", function () {
     cy.get(".blog").eq(0).find("button").click();
     cy.get(".blog").eq(1).find("button").click();
     cy.get(".blog").eq(2).find("button").click();
-    cy.get(".blogInfo").eq(2).find("#likeButton").click();
+    cy.get("[data-cy='blogInfo']").eq(2).find("#likeButton").click();
     cy.wait(100);
-    cy.get(".blogInfo")
+    cy.get("[data-cy='blogInfo']")
       .find("#likes")
       .contains("Likes: 1")
       .parent()
       .find("#likeButton")
       .click();
     cy.wait(100);
-    cy.get(".blogInfo")
+    cy.get("[data-cy='blogInfo']")
       .find("#likes")
       .contains("Likes: 2")
       .parent()
       .find("#likeButton")
       .click();
     cy.wait(100);
-    cy.get(".blogInfo")
+    cy.get("[data-cy='blogInfo']")
       .find("#likes")
       .contains("Likes: 3")
       .parent()
       .find("#likeButton")
       .click();
     cy.wait(100);
-    cy.get(".blogInfo")
+    cy.get("[data-cy='blogInfo']")
       .contains("firsturl")
       .parent()
       .find("#likeButton")

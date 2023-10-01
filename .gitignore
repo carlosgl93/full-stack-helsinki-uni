@@ -17,6 +17,9 @@ part4/blogs-back/.env
 part4/blogs-back/src/node_modules
 ./part4/blogs-back/.env
 */nodemo
+part6/unicafe-redux/node_modules
+part6/redux-anecdotes/node_modules
+
 
 
 
