@@ -5,6 +5,28 @@
 ./part1/courseinfo/node_modules
 ./part1/unicafe/node_modules
 ./part1/anecdotes/node_modules
+./part2/courseinfo/node_modules
+./part2/part2-notes/node_modules
+./part2/phonebook/node_modules
+./part2/countries/node_modules
+./part3/first-server/node_modules
+./part4/.env
+./part4/node_modules
+part4/blogs-back/node_modules
+part4/blogs-back/.env
+part4/blogs-back/src/node_modules
+./part4/blogs-back/.env
+*/nodemo
+part6/unicafe-redux/node_modules
+part6/redux-anecdotes/node_modules
+part6/query-anecdotes/node_modules
+part7/*/node_modules
+
+
+
+
+
+
 
 
 /.pnp
@@ -26,3 +48,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+part4/blogs-back/.env
