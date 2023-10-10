@@ -1,10 +1,14 @@
 import { useState, useEffect } from "react";
 import blogService from "../services/blogs";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 export const Home = () => {
   const [user, setUser] = useState();
   const [notification, setNotification] = useState();
+  const { userInfo } = useSelector((state) => state.auth);
 
+  console.log({ userInfo });
   useEffect(() => {
     const userLocalStorage = localStorage.getItem("userBlogApp");
     if (userLocalStorage) {
@@ -58,6 +62,7 @@ export const Home = () => {
   return (
     <div>
       <h2>Blogs</h2>
+      <Link to="auth/login">Login</Link>
     </div>
   );
 };

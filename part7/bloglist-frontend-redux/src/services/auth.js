@@ -3,16 +3,15 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
 const authUrl = "http://localhost:3003/api";
-
+const config = {
+  headers: {
+    "Content-type": "application/json",
+  },
+};
 export const registerUser = createAsyncThunk(
   "auth/register",
   async ({ firstname, email, password }, { rejectWithValue }) => {
     try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
       const result = await axios.post(
         `${authUrl}/users`,
         { firstname, email, password },
@@ -25,6 +24,22 @@ export const registerUser = createAsyncThunk(
       } else {
         return rejectWithValue(error.message);
       }
+    }
+  },
+);
+
+export const login = createAsyncThunk(
+  "auth/login",
+  async ({ email, password }, { rejectWithValue }) => {
+    try {
+      const loginResult = await axios.post(
+        `${authUrl}/login`,
+        { email, password },
+        config,
+      );
+      return loginResult;
+    } catch (error) {
+      return rejectWithValue(error);
     }
   },
 );

@@ -4,12 +4,15 @@ import { Nav, Notification } from "./components";
 import { useSelector } from "react-redux";
 
 const App = () => {
-  const notification = useSelector((state) => state.notification);
+  const {
+    show: showNotif,
+    message,
+    severity,
+  } = useSelector((state) => state.notification);
 
   return (
     <>
       <Nav />
-
       <Container
         sx={{
           ml: {
@@ -19,14 +22,12 @@ const App = () => {
         }}
       >
         <Router />
-        {notification.show ? (
+        {showNotif && (
           <Notification
-            message={notification.message}
-            open={notification.show}
-            severity={notification.severity}
+            message={message}
+            open={showNotif}
+            severity={severity}
           />
-        ) : (
-          <>No notification</>
         )}
       </Container>
     </>
