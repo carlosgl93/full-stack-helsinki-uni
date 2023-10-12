@@ -18,9 +18,7 @@ blogRouter.get("/:id", async (request, response) => {
 
   const idAsNumber = parseInt(id);
 
-  console.log("VALIDATING ID", validateId(idAsNumber));
   const validatedId = await validateId(idAsNumber);
-  console.log(validatedId);
 
   if (!validatedId) return response.status(400);
 
@@ -28,7 +26,6 @@ blogRouter.get("/:id", async (request, response) => {
   if (!blog) {
     response.status(404);
   }
-  console.log(JSON.stringify(blog));
   response.json(blog);
 });
 
@@ -107,7 +104,7 @@ blogRouter.post("/seed", async (req, res) => {
 });
 
 blogRouter.put("/:id", async (req, res) => {
-  const { title, author, likes, url } = req.body;
+  const { title, author, likes, url, id } = req.body.blog;
 
   const updatedBlog = {
     title,
@@ -116,7 +113,7 @@ blogRouter.put("/:id", async (req, res) => {
     url,
   };
 
-  const result = await Blog.findByIdAndUpdate(req.params.id, updatedBlog, {
+  const result = await Blog.findByIdAndUpdate(id, updatedBlog, {
     new: true,
   });
 

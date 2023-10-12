@@ -15,11 +15,13 @@ export const AppController = () => {
     severity,
   } = useSelector((state) => state.notification);
 
+  const allState = useSelector((state) => state);
+  console.log("ALL STATE", allState);
+
   const dispatch = useDispatch();
 
   const token = Cookies.get("userToken");
   const { error, data } = useLoginQuery(token);
-  console.log("data", data);
   useEffect(() => {
     if (data) {
       dispatch(setUser(data.user));

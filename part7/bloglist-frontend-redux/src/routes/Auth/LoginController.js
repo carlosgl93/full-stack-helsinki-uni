@@ -30,7 +30,7 @@ export const LoginController = () => {
         }),
       );
     } else return;
-  }, []);
+  }, [userInfo]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();

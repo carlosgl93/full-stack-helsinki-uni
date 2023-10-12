@@ -1,12 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import blogService from "../../services/blogs";
-import { useLoaderData } from "react-router";
+import { useLikeBlogMutation } from "../../features/blogs/blogs";
 
-export const Blog = ({ blog, userId, handleLike, setNotification }) => {
-  // const data = useLoaderData();
-  // console.log("data from blogs", data);
+export const BlogCard = ({ blog, userId, setNotification }) => {
   const [view, setView] = useState(true);
-
+  const navigate = useNavigate();
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -14,6 +13,15 @@ export const Blog = ({ blog, userId, handleLike, setNotification }) => {
     borderWidth: 1,
     marginBottom: 5,
   };
+
+  const [likeBlog, { error, data, isSuccess, isLoading }] =
+    useLikeBlogMutation();
+
+  console.log(error, data, isSuccess, isLoading);
+
+  console.log("BLOG: ", blog);
+
+  const handleLike = async (blog) => await likeBlog(blog);
 
   const handleView = () => setView(!view);
 
@@ -43,6 +51,14 @@ export const Blog = ({ blog, userId, handleLike, setNotification }) => {
       }
     }
   };
+
+  useEffect(() => {
+    if (!blog) {
+      console.log("ASDFASDFA");
+      navigate("/auth/login");
+    }
+  }, []);
+
   return (
     <div style={blogStyle} className="blog">
       <h4

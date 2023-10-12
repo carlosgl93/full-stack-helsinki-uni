@@ -94,11 +94,11 @@ export function Nav(props) {
           </IconButton>
           <Typography variant="h6" noWrap component="div">
             <Link sx={LinkStyles} component={RouterLink} to="/">
-              {/* Carlos Portfolio */}
+              Carlos Portfolio
             </Link>
           </Typography>
           {userInfo ? (
-            <Link sx={LinkStyles} component={RouterLink} to="auth/profile">
+            <Link sx={LinkStyles} component={RouterLink} to="/profile">
               Profile
             </Link>
           ) : (

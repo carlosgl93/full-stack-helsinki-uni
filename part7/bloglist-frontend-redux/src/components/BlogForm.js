@@ -1,53 +1,9 @@
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  resetNotification,
-  setNotification,
-} from "../features/notification/notificationSlice";
-import { useCreateBlogMutation } from "../services/blogs";
+import { BlogFormController } from "./BlogFormController";
 
 export const BlogForm = () => {
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
+  const { title, setTitle, url, setUrl, handleCreateBlog } =
+    BlogFormController();
 
-  const { userInfo } = useSelector((state) => state.auth);
-
-  const dispatch = useDispatch();
-
-  const [createBlog, { isLoading, isError }] = useCreateBlogMutation();
-
-  const handleCreateBlog = async (e, title, url) => {
-    e.preventDefault();
-    if (!title || !url) return;
-    const newBlog = {
-      title,
-      url,
-    };
-    console.log("new blog", newBlog);
-    try {
-      const blogCreated = await createBlog({
-        blog: newBlog,
-        token: userInfo.token,
-      });
-      dispatch(
-        setNotification(() => ({
-          severity: "success",
-          message: `New blog created: ${blogCreated.title}`,
-        })),
-      );
-    } catch (error) {
-      console.log(error);
-      dispatch(
-        setNotification(() => ({
-          severity: "error",
-          message: `Error creating the blog: ${error.message}`,
-        })),
-      );
-    }
-    setTimeout(() => {
-      dispatch(resetNotification());
-    }, 5000);
-  };
   return (
     <div>
       <h2>Create a new blog</h2>
@@ -74,7 +30,7 @@ export const BlogForm = () => {
           />
         </div>
         <div>
-          <button type="submit" id="submitButton">
+          <button type="submit" id="submitButton" disabled={!title || !url}>
             Create
           </button>
         </div>

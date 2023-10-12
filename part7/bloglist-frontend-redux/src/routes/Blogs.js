@@ -1,8 +1,10 @@
-import { Blog, Loading, Error } from "../components";
-import { useGetAllBlogsQuery } from "../services/blogs";
+import { Link } from "@mui/material";
+import { Link as RouterLink } from "react-router-dom";
+import { Blog, Loading, Error, BlogCard } from "../components";
+import { BlogsController } from "./BlogsController";
 
 export const Blogs = () => {
-  const { data, error, isLoading } = useGetAllBlogsQuery();
+  const { data, error, isLoading } = BlogsController();
 
   return (
     <div>
@@ -10,7 +12,12 @@ export const Blogs = () => {
       {error && <Error />}
       {isLoading && <Loading />}
 
-      {data && data.map((blog) => <Blog key={blog.id} blog={blog} />)}
+      {data &&
+        data.map((blog) => (
+          <Link key={blog.id} component={RouterLink} to={`/blogs/${blog.id}`}>
+            <BlogCard blog={blog} />
+          </Link>
+        ))}
     </div>
   );
 };
