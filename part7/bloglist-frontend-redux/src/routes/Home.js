@@ -10,8 +10,6 @@ export const Home = () => {
   const [notification, setNotification] = useState();
   const { userInfo } = useSelector((state) => state.auth);
 
-  console.log({ userInfo });
-
   const handleLikeBlog = async (blog) => {
     try {
       await blogService.likeBlog(blog);
@@ -26,31 +24,6 @@ export const Home = () => {
         message: error.message,
       });
     }
-  };
-
-  const handleCreateBlog = async (e, title, url) => {
-    e.preventDefault();
-    if (!title || !url) return;
-    const newBlog = {
-      title,
-      url,
-    };
-    try {
-      const blogCreated = await blogService.create(newBlog);
-      setNotification(() => ({
-        color: "green",
-        message: `New blog created: ${blogCreated.title}`,
-      }));
-    } catch (error) {
-      console.log(error);
-      setNotification(() => ({
-        color: "red",
-        message: `error creating the blog: ${error.message}`,
-      }));
-    }
-    setTimeout(() => {
-      setNotification(null);
-    }, 5000);
   };
 
   return (

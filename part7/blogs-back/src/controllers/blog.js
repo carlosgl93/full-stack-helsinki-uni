@@ -64,7 +64,8 @@ blogRouter.delete("/:id", userExtractor, async (request, response) => {
 });
 
 blogRouter.post("/", userExtractor, async (request, response) => {
-  const newBlog = request.body;
+  const newBlog = request.body.blog;
+  console.log(newBlog);
 
   if (!newBlog.title || !newBlog.url) {
     response

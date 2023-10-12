@@ -5,16 +5,31 @@ const baseUrl = "/api/blogs";
 export const blogsApi = createApi({
   reducerPath: "blogsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3003/api/",
+    baseUrl: baseUrl,
   }),
   endpoints: (builder) => ({
     getAllBlogs: builder.query({
-      query: () => "blogs",
+      query: () => ({
+        method: "GET",
+      }),
+      providesTags: ["blogs"],
+    }),
+    createBlog: builder.mutation({
+      query: ({ blog, token }) => {
+        return {
+          method: "POST",
+          body: { blog },
+          headers: {
+            authorization: token,
+          },
+        };
+      },
+      invalidatesTags: ["blogs"],
     }),
   }),
 });
 
-export const { useGetAllBlogsQuery } = blogsApi;
+export const { useGetAllBlogsQuery, useCreateBlogMutation } = blogsApi;
 
 let token = null;
 console.log(token);

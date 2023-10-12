@@ -53,7 +53,23 @@ const tokenExtractor = (request, response, next) => {
 };
 
 const userExtractor = async (request, response, next) => {
-  const decodedToken = jwt.decode(request.token, process.env.SECRET);
+  console.log("req.body", request.body);
+  let decodedToken;
+  console.log(`HEADERS`, request.headers);
+  if (!request.headers.authorization)
+    res.status(401).json({
+      message: "Unauthorized, you need a token",
+      error: "No token",
+    });
+  // if (request.body.token) {
+  //   decodedToken = jwt.decode(request.body.token, process.env.SECRET);
+  // } else if (!request.headers.authorization) {
+
+  // } else {
+  //   decodedToken = jwt.decode(request.token, process.env.SECRET);
+  // }
+  decodedToken = jwt.verify(request.headers.authorization, process.env.SECRET);
+
   console.log("DECODED TOKEN", decodedToken);
   if (!decodedToken || !decodedToken.id) {
     response.status(401).json({ error: "Token invalid" }).end();

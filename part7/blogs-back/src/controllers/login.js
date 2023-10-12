@@ -53,10 +53,12 @@ loginRouter.post("/tokenLogin", async (req, res) => {
   if (user) {
     return res.status(200).send({
       message: "User logged in with token",
-      user,
+      user: { ...user._doc, token },
     });
   } else {
-    return res.status(400).send(user);
+    return res.status(404).send({
+      message: "User not found!",
+    });
   }
 });
 

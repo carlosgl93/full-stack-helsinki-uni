@@ -19,6 +19,7 @@ export const AppController = () => {
 
   const token = Cookies.get("userToken");
   const { error, data } = useLoginQuery(token);
+  console.log("data", data);
   useEffect(() => {
     if (data) {
       dispatch(setUser(data.user));
