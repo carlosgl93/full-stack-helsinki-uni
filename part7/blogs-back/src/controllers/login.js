@@ -23,12 +23,41 @@ loginRouter.post("/", async (req, res) => {
   };
 
   const token = jwt.sign(userForToken, process.env.SECRET, {
-    expiresIn: 60 * 60 * 4,
+    expiresIn: 7 * 24 * 60 * 60,
   });
 
   res
     .status(200)
     .send({ token, email: user.email, name: user.name, id: user._id });
+});
+
+loginRouter.post("/tokenLogin", async (req, res) => {
+  console.log(req.query);
+  const token = req.query.token;
+  const decodedToken = jwt.decode(token);
+  console.log(decodedToken);
+
+  const verifyToken = jwt.verify(token, process.env.SECRET);
+  console.log(`verifyToken`, verifyToken);
+
+  if (Date.now() / 1000 >= decodedToken.exp) {
+    return res.status(400).send({
+      message: "Token expired, relogin",
+    });
+  }
+
+  const user = await User.findOne({ email: decodedToken.email });
+
+  console.log(user);
+
+  if (user) {
+    return res.status(200).send({
+      message: "User logged in with token",
+      user,
+    });
+  } else {
+    return res.status(400).send(user);
+  }
 });
 
 module.exports = loginRouter;

@@ -14,7 +14,6 @@ export const LoginController = () => {
     (state) => state.auth,
   );
   const navigate = useNavigate();
-  console.log(loading, userInfo, error, success);
   const dispatch = useDispatch();
 
   const [email, setEmail] = useState("");

@@ -6,7 +6,10 @@ const login = async (credentials) => {
   return response.data;
 };
 
-// eslint-disable-next-line
-export default {
-  login,
+const loginWithToken = async (token) => {
+  const response = await axios.post(`${baseUrl}/tokenLogin`, token);
+  return response.data;
 };
+
+// eslint-disable-next-line
+export { login, loginWithToken };

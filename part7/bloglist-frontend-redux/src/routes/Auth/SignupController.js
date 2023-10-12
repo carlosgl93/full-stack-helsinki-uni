@@ -19,6 +19,7 @@ export const SignupController = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    console.log(password, confirmPassword);
     if (password !== confirmPassword) {
       dispatch(
         setNotification({
@@ -32,9 +33,7 @@ export const SignupController = () => {
       return;
     }
     try {
-      const result = await dispatch(
-        registerUser({ firstname: name, email, password }),
-      );
+      const result = await dispatch(registerUser({ name, email, password }));
 
       const error = result?.error;
       const { data, status } = result.payload;

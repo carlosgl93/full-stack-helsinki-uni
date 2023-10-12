@@ -10,11 +10,11 @@ const config = {
 };
 export const registerUser = createAsyncThunk(
   "auth/register",
-  async ({ firstname, email, password }, { rejectWithValue }) => {
+  async ({ name, email, password }, { rejectWithValue }) => {
     try {
       const result = await axios.post(
         `${authUrl}/users`,
-        { firstname, email, password },
+        { name, email, password },
         config,
       );
       return result;
@@ -47,11 +47,17 @@ export const login = createAsyncThunk(
 export const authApi = createApi({
   reducerPath: "authApi",
   baseQuery: fetchBaseQuery({
+    method: "POST",
     baseUrl: `${authUrl}/login`,
   }),
   endpoints: (builder) => ({
     login: builder.query({
-      query: (user) => `/${user}`,
+      query: (token) => {
+        return {
+          url: `tokenLogin`,
+          params: { token },
+        };
+      },
     }),
   }),
 });

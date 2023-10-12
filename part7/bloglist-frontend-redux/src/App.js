@@ -1,14 +1,10 @@
 import Router from "./routes/Router";
 import { Container } from "@mui/material";
 import { Nav, Notification } from "./components";
-import { useSelector } from "react-redux";
+import { AppController } from "./AppController";
 
 const App = () => {
-  const {
-    show: showNotif,
-    message,
-    severity,
-  } = useSelector((state) => state.notification);
+  const { showNotif, message, severity } = AppController();
 
   return (
     <>

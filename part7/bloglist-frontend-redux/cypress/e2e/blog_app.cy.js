@@ -3,10 +3,12 @@ describe("Blog app", function () {
     cy.request("POST", `${Cypress.env("BACKEND")}/testing/reset`);
 
     const user1 = {
-      username: "admin",
+      name: "admin",
+      email: "admin@admin.com",
       password: "admin123",
-      name: "Carlos",
     };
+
+    console.log(Cypress.env("BACKEND"));
 
     cy.request("POST", `${Cypress.env("BACKEND")}/users`, user1);
 
@@ -19,7 +21,7 @@ describe("Blog app", function () {
 
   describe.only("logged in actions", function () {
     beforeEach(function () {
-      cy.login({ username: "admin", password: "admin123" }).then(() => {
+      cy.login({ email: "admin@admin.com", password: "admin123" }).then(() => {
         cy.contains("Create a blog").click();
       });
     });
