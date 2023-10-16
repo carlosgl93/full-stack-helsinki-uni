@@ -1,10 +1,11 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Blog, Login, BlogForm, Togglable } from "./components";
 import { createBlog, getAll } from "./services/blogs";
 import { AuthContext } from "./state/auth";
 import { Toast } from "./components/Toast";
 import { UiContext } from "./state/ui";
+import "./styles/App.css";
 
 const App = () => {
   const [notification, setNotification] = useState();

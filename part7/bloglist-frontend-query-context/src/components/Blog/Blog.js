@@ -1,9 +1,14 @@
-import { useState } from "react";
-import PropTypes from "prop-types";
+import { useContext, useState } from "react";
 import blogService from "../../services/blogs";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AuthContext } from "../../state/auth";
+import { SEVERITY, UiContext } from "../../state/ui";
 
 export const Blog = ({ blog, userId, handleLike, setNotification }) => {
   const [view, setView] = useState(false);
+
+  const { user } = useContext(AuthContext);
+  const { toggleToast } = useContext(UiContext);
 
   const blogStyle = {
     paddingTop: 10,
@@ -11,36 +16,38 @@ export const Blog = ({ blog, userId, handleLike, setNotification }) => {
     border: "solid",
     borderWidth: 1,
     marginBottom: 5,
+    borderRadius: "5px",
+    borderColor: "#3C7A89",
   };
+
+  const { likeBlog, deleteBlog } = blogService;
+
+  const queryClient = useQueryClient();
+
+  const { isLoading, mutate, error, data } = useMutation({
+    mutationFn: () => likeBlog(blog),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["blogs"],
+      });
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteBlog(blog.id, user.token),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["blogs"],
+      });
+      toggleToast(SEVERITY.SUCCESS, "Blog deleted");
+    },
+  });
 
   const handleView = () => setView(!view);
 
-  const handleDelete = async () => {
-    const confirmation = window.confirm(
-      "Are you sure you want to delete this post?",
-    );
-    console.log(confirmation);
-    if (confirmation) {
-      try {
-        await blogService.deleteBlog(blog.id);
-        setTimeout(() => {
-          setNotification({
-            color: "green",
-            message: "blog deleted successfully",
-          });
-        }, 5000);
-      } catch (error) {
-        console.log(error);
+  const handleDelete = (blog) => deleteMutation.mutate(blog.id);
 
-        setTimeout(() => {
-          setNotification({
-            color: "red",
-            message: error.message,
-          });
-        }, 5000);
-      }
-    }
-  };
+  const handleLikeBlog = (blog) => mutate(blog);
 
   return (
     <div style={blogStyle} className="blog">
@@ -63,18 +70,22 @@ export const Blog = ({ blog, userId, handleLike, setNotification }) => {
           <p id="url">{blog.url}</p>
           <p id="likes" className="blogLikes">
             Likes: {blog.likes}
-            <span>
+            {isLoading ? (
+              <span>
+                <p>Loading...</p>
+              </span>
+            ) : (
               <button
                 id="likeButton"
                 className="likeCTA"
-                onClick={() => handleLike(blog)}
+                onClick={() => handleLikeBlog(blog)}
               >
                 Like
               </button>
-            </span>
+            )}
           </p>
           <p>By: {blog.author}</p>
-          {blog.user === userId && (
+          {blog.user === user.id && (
             <button id="deleteButton" onClick={handleDelete}>
               Delete
             </button>

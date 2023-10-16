@@ -12,7 +12,6 @@ export const Toast = () => {
         zIndex: "9000",
         justifyContent: "center",
         flexDirection: "column",
-        backgroundColor: "limegreen",
         borderRadius: "10px",
         padding: "10px",
       }}

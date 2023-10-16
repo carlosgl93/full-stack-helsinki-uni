@@ -33,10 +33,10 @@ const likeBlog = async (newBlog) => {
   return request.data;
 };
 
-const deleteBlog = async (blogId) => {
-  console.log(token);
+const deleteBlog = async (blogId, userToken) => {
+  console.log(userToken);
   const config = {
-    headers: { Authorization: token },
+    headers: { Authorization: userToken },
   };
   console.log("CONFIG", config);
 
