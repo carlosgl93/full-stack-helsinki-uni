@@ -11,21 +11,32 @@ export interface AuthState {
 }
 
 const Auth_INITIAL_STATE: AuthState = {
-  user: {
-    email: "",
-    id: "",
-    name: "",
-    token: "",
-  },
+  user: null,
 };
 
 const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, Auth_INITIAL_STATE);
 
+  const updateUserState = (user: User) => {
+    dispatch({
+      type: "Auth - Login",
+      payload: user,
+    });
+  };
+
+  const logoutUser = () => {
+    dispatch({
+      type: "Auth - Logout",
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
         ...state,
+
+        updateUserState,
+        logoutUser,
       }}
     >
       {children}

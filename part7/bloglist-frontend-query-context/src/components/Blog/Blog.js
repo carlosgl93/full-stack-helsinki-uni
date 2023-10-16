@@ -84,9 +84,3 @@ export const Blog = ({ blog, userId, handleLike, setNotification }) => {
     </div>
   );
 };
-
-Blog.propTypes = {
-  blog: PropTypes.object.isRequired,
-  handleLike: PropTypes.func.isRequired,
-  userId: PropTypes.string.isRequired,
-};

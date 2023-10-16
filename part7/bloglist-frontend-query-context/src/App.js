@@ -3,10 +3,12 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Blog, Login, BlogForm, Togglable } from "./components";
 import { UiContext } from "./state/ui/UiContext";
 import { createBlog, getAll } from "./services/blogs";
+import { AuthContext } from "./state/auth";
 
 const App = () => {
-  const [user, setUser] = useState();
   const [notification, setNotification] = useState();
+  const { user, logoutUser } = useContext(AuthContext);
+  console.log(user);
 
   const newBlogMutation = useMutation({
     mutationFn: createBlog,
@@ -16,15 +18,6 @@ const App = () => {
     queryKey: ["blogs"],
     queryFn: getAll,
   });
-
-  useEffect(() => {
-    const userLocalStorage = localStorage.getItem("userBlogApp");
-    if (userLocalStorage) {
-      const userParsed = JSON.parse(userLocalStorage);
-      setUser(userParsed);
-      blogService.setToken(userParsed.token);
-    }
-  }, []);
 
   const handleLikeBlog = async (blog) => {
     try {
@@ -75,19 +68,13 @@ const App = () => {
 
       {!user && (
         <Togglable toggleLabel="Log in">
-          <Login setUser={setUser} setNotification={setNotification} />
+          <Login setNotification={setNotification} />
         </Togglable>
       )}
       {user && <h5>{user.name}, read or create a blog!</h5>}
 
       {user && (
-        <button
-          id="logout"
-          onClick={() => {
-            window.localStorage.removeItem("userBlogApp");
-            setUser(null);
-          }}
-        >
+        <button id="logout" onClick={logoutUser}>
           Sign out
         </button>
       )}

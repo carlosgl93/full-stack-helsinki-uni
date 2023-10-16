@@ -1,3 +1,4 @@
+import { User } from "@src/types";
 import { createContext } from "react";
 
 interface ContextProps {
@@ -6,6 +7,9 @@ interface ContextProps {
     id: string;
     name: string;
     token: string;
-  };
+  } | null;
+
+  updateUserState: (user: User) => void;
+  logoutUser: () => void;
 }
 export const AuthContext = createContext({} as ContextProps);
