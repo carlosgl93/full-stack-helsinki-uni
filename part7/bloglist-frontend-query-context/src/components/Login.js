@@ -1,26 +1,28 @@
 import { useState } from "react";
-import loginService from "../services/login";
 import blogService from "../services/blogs";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "../services/login";
 
 export const Login = ({ setUser }) => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
+  const loginMutation = useMutation({
+    mutationFn: login,
+  });
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const result = await loginService.login({ username, password });
-      blogService.setToken(result.token);
-
-      window.localStorage.setItem("userBlogApp", JSON.stringify(result));
+      loginMutation.mutate({ email, password });
 
       setUser(result);
-      setUsername("");
+      setEmail("");
       setPassword("");
     } catch (error) {
       console.log("error login in", error);
-      setErrorMessage("Credentials not found, check username or password");
+      setErrorMessage("Credentials not found, check email or password");
       setTimeout(() => {
         setErrorMessage(null);
       }, 5000);
@@ -43,13 +45,13 @@ export const Login = ({ setUser }) => {
 
       <form onSubmit={handleSubmit}>
         <div>
-          <label htmlFor="username">Username:</label>
+          <label htmlFor="email">Email:</label>
           <input
-            id="username"
-            name="username"
+            id="email"
+            name="email"
             type="text"
-            onChange={({ target }) => setUsername(target.value)}
-            value={username}
+            onChange={({ target }) => setEmail(target.value)}
+            value={email}
           />
         </div>
         <div>

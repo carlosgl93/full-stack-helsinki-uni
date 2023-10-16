@@ -10,12 +10,12 @@ const setToken = (newToken) => {
   console.log("token", token);
 };
 
-const getAll = () => {
+export const getAll = () => {
   const request = axios.get(baseUrl);
   return request.then((response) => response.data);
 };
 
-const create = async (newBlog) => {
+export const createBlog = async (newBlog) => {
   const config = {
     headers: { Authorization: token },
   };
@@ -45,4 +45,4 @@ const deleteBlog = async (blogId) => {
 };
 
 // eslint-disable-next-line
-export default { getAll, create, setToken, likeBlog, deleteBlog };
+export default { getAll, createBlog, setToken, likeBlog, deleteBlog };

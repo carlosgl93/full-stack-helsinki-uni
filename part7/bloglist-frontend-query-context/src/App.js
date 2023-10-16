@@ -1,18 +1,21 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Blog, Login, BlogForm, Togglable } from "./components";
-import blogService from "./services/blogs";
+import { UiContext } from "./state/ui/UiContext";
+import { createBlog, getAll } from "./services/blogs";
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
   const [user, setUser] = useState();
   const [notification, setNotification] = useState();
 
-  useEffect(() => {
-    console.log("triggering first useEffect");
-    blogService
-      .getAll()
-      .then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
-  }, [notification]);
+  const newBlogMutation = useMutation({
+    mutationFn: createBlog,
+  });
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["blogs"],
+    queryFn: getAll,
+  });
 
   useEffect(() => {
     const userLocalStorage = localStorage.getItem("userBlogApp");
@@ -47,7 +50,9 @@ const App = () => {
       url,
     };
     try {
-      const blogCreated = await blogService.create(newBlog);
+      const result = newBlogMutation.mutate(newBlog);
+      console.log(result);
+      // const blogCreated = await blogService.create(newBlog);
       setNotification(() => ({
         color: "green",
         message: `New blog created: ${blogCreated.title}`,
@@ -104,7 +109,9 @@ const App = () => {
       <div>
         <h2>Blog List</h2>
 
-        {blogs.map((blog) => (
+        {isLoading && <p>Loading...</p>}
+
+        {data?.map((blog) => (
           <Blog
             key={blog.id}
             userId={user && user.id}
