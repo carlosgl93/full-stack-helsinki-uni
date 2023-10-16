@@ -30,9 +30,10 @@ export const uiReducer = (state: UiState, action: UiActionType) => {
       };
 
     case "UI - TOGGLE TOAST":
+      console.log(action.payload);
       return {
         ...state,
-        toastOpen: !state.toastOpen,
+        toast: action.payload,
       };
   }
 };

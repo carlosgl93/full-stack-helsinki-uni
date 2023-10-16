@@ -3,7 +3,10 @@ import { SEVERITY } from "./uiReducer";
 
 interface UiContextProps {
   sideMenuOpen: boolean;
-  toastOpen: boolean;
+  toast: null | {
+    severity: SEVERITY;
+    message: string;
+  };
 
   toggleSideMenu: () => void;
   toggleToast: (severity: SEVERITY, message: string) => void;

@@ -8,18 +8,16 @@ type UiProviderProps = {
 
 export type UiState = {
   sideMenuOpen: boolean;
-  toastOpen: boolean;
-  toggleSideMenu: () => void;
-  toggleToast: () => void;
+  toast: null | {
+    severity: SEVERITY;
+    message: string;
+  };
 };
 
 export const UiProvider: FC<UiProviderProps> = ({ children }) => {
   const initialState: UiState = {
     sideMenuOpen: false,
-    toastOpen: false,
-
-    toggleSideMenu: () => {},
-    toggleToast: () => {},
+    toast: null,
   };
 
   const [state, dispatch] = useReducer(uiReducer, initialState);
@@ -29,7 +27,7 @@ export const UiProvider: FC<UiProviderProps> = ({ children }) => {
       type: "UI - TOGGLE SIDE MENU",
     });
 
-  const toggleToast = (severity: SEVERITY, message: string) =>
+  const toggleToast = (severity: SEVERITY, message: string) => {
     dispatch({
       type: "UI - TOGGLE TOAST",
       payload: {
@@ -37,6 +35,13 @@ export const UiProvider: FC<UiProviderProps> = ({ children }) => {
         message,
       },
     });
+    setTimeout(() => {
+      dispatch({
+        type: "UI - TOGGLE TOAST",
+        payload: null,
+      });
+    }, 5000);
+  };
 
   return (
     <UiContext.Provider value={{ ...state, toggleSideMenu, toggleToast }}>

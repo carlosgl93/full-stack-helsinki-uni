@@ -1,14 +1,16 @@
 import { useState, useEffect, useContext } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { Blog, Login, BlogForm, Togglable } from "./components";
-import { UiContext } from "./state/ui/UiContext";
 import { createBlog, getAll } from "./services/blogs";
 import { AuthContext } from "./state/auth";
+import { Toast } from "./components/Toast";
+import { UiContext } from "./state/ui";
 
 const App = () => {
   const [notification, setNotification] = useState();
   const { user, logoutUser } = useContext(AuthContext);
-  console.log(user);
+  const { toast } = useContext(UiContext);
+  console.log("TOAST", toast);
 
   const newBlogMutation = useMutation({
     mutationFn: createBlog,
@@ -64,6 +66,8 @@ const App = () => {
 
   return (
     <div>
+      {toast && <Toast />}
+
       <h2>Blogs</h2>
 
       {!user && (
