@@ -1,5 +1,5 @@
 import { UiContext } from "../state/ui";
-import React, { useContext } from "react";
+import { useContext } from "react";
 
 export const Toast = () => {
   const { toast } = useContext(UiContext);

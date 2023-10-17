@@ -16,6 +16,10 @@ p {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
+body {
+  padding: 1%;
+}
+
 button {
   border-radius: 5px;
   border-color: #d7c0d0;

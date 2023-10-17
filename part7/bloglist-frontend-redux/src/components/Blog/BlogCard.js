@@ -1,11 +1,24 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
 import blogService from "../../services/blogs";
-import { useLikeBlogMutation } from "../../features/blogs/blogs";
+import {
+  useGetBlogQuery,
+  useLikeBlogMutation,
+} from "../../features/blogs/blogs";
 
 export const BlogCard = ({ blog, userId, setNotification }) => {
+  console.log("BLOG PROP", blog);
+
   const [view, setView] = useState(true);
-  const navigate = useNavigate();
+  const [updatedBlog, setUpdatedBlog] = useState(blog);
+  const {
+    data: blogData,
+    error: blogError,
+    isLoading: blogLoading,
+  } = useGetBlogQuery(blog.id, blog.user);
+
+  console.log("BLOG DATA QUJERY", blogData);
+
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -17,11 +30,11 @@ export const BlogCard = ({ blog, userId, setNotification }) => {
   const [likeBlog, { error, data, isSuccess, isLoading }] =
     useLikeBlogMutation();
 
-  console.log(error, data, isSuccess, isLoading);
-
-  console.log("BLOG: ", blog);
-
-  const handleLike = async (blog) => await likeBlog(blog);
+  const handleLike = async (blog) => {
+    await likeBlog(blog);
+    setUpdatedBlog(() => data);
+  };
+  console.log("UPDATED BLOG", data);
 
   const handleView = () => setView(!view);
 
@@ -51,13 +64,6 @@ export const BlogCard = ({ blog, userId, setNotification }) => {
       }
     }
   };
-
-  useEffect(() => {
-    if (!blog) {
-      console.log("ASDFASDFA");
-      navigate("/auth/login");
-    }
-  }, []);
 
   return (
     <div style={blogStyle} className="blog">

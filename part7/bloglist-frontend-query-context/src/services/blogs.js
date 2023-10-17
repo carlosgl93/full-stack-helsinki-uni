@@ -15,9 +15,12 @@ export const getAll = () => {
   return request.then((response) => response.data);
 };
 
-export const createBlog = async (newBlog) => {
+export const createBlog = async ({ newBlog, userToken }) => {
+  console.log(userToken);
+  console.log(newBlog);
+
   const config = {
-    headers: { Authorization: token },
+    headers: { authorization: userToken },
   };
 
   const request = await axios.post(baseUrl, newBlog, config);
@@ -44,5 +47,26 @@ const deleteBlog = async (blogId, userToken) => {
   return request.data;
 };
 
+const getOne = async (blogId) => {
+  const request = await axios.get(`${baseUrl}/${blogId}`);
+  return request.data;
+};
+
+const commentBlog = async ({ id, comment }) => {
+  console.log(id, comment);
+  const request = await axios.post(`${baseUrl}/${id}/comments`, {
+    comment,
+  });
+  return request.data;
+};
+
 // eslint-disable-next-line
-export default { getAll, createBlog, setToken, likeBlog, deleteBlog };
+export default {
+  getAll,
+  createBlog,
+  setToken,
+  likeBlog,
+  deleteBlog,
+  getOne,
+  commentBlog,
+};

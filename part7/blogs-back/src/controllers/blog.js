@@ -6,23 +6,24 @@ const middleware = require("../utils/middleware");
 const { userExtractor } = middleware;
 
 blogRouter.get("/", async (request, response) => {
-  const allBlogs = await Blog.find({}).populate("user", {
-    username: 1,
+  const allBlogs = await Blog.find({}).populate("author", {
     name: 1,
   });
   response.json(allBlogs).end();
 });
 
 blogRouter.get("/:id", async (request, response) => {
+  console.log(request.params);
   const { id } = request.params;
 
-  const idAsNumber = parseInt(id);
+  // const idAsNumber = parseInt(id);
 
-  const validatedId = await validateId(idAsNumber);
+  const validatedId = await validateId(id);
+  console.log("validatedId", validatedId);
 
   if (!validatedId) return response.status(400);
 
-  const blog = await Blog.findById(idAsNumber);
+  const blog = await Blog.findById(id);
   if (!blog) {
     response.status(404);
   }
@@ -36,17 +37,10 @@ blogRouter.delete("/remove", async (req, res) => {
 
 blogRouter.delete("/:id", userExtractor, async (request, response) => {
   const { id } = request.params;
-
   const user = request.user;
-
-  console.log("USER DELETING", user);
-
   const blogToDelete = await Blog.findById(id);
-  console.log("user", user);
 
-  console.log("BLOG TO DELETE", blogToDelete);
-
-  if (blogToDelete.user === user._id.toString()) {
+  if (blogToDelete.user._id.toString() === user._id.toString()) {
     const deleted = await Blog.findByIdAndDelete(id);
     response.status(204).json(deleted).end();
     return;
@@ -61,8 +55,8 @@ blogRouter.delete("/:id", userExtractor, async (request, response) => {
 });
 
 blogRouter.post("/", userExtractor, async (request, response) => {
-  const newBlog = request.body.blog;
-  console.log(newBlog);
+  const newBlog = request.body;
+  console.log(request.body);
 
   if (!newBlog.title || !newBlog.url) {
     response
@@ -104,7 +98,7 @@ blogRouter.post("/seed", async (req, res) => {
 });
 
 blogRouter.put("/:id", async (req, res) => {
-  const { title, author, likes, url, id } = req.body.blog;
+  const { title, author, likes, url, id } = req.body;
 
   const updatedBlog = {
     title,
@@ -120,4 +114,25 @@ blogRouter.put("/:id", async (req, res) => {
   res.json(result);
 });
 
+blogRouter.post("/:id/comments", async (req, res) => {
+  const { comment } = req.body;
+  const { id } = req.params;
+  const blog = await Blog.findById(id);
+  const updatedBlog = {
+    ...blog,
+    comments: [...blog.comments, comment],
+  };
+  const result = await Blog.findByIdAndUpdate(
+    id,
+    {
+      $addToSet: {
+        comments: comment,
+      },
+    },
+    { new: true }
+  );
+
+  console.log(result);
+  res.json(result);
+});
 module.exports = blogRouter;

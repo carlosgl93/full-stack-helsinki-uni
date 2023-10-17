@@ -4,6 +4,13 @@ const loginRouter = require("express").Router();
 const User = require("../models/user");
 
 loginRouter.post("/", async (req, res) => {
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).json({
+      errorCode: 400,
+      message: "Email or password fields missing/malformed",
+    });
+  }
+  console.log(req.body);
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });

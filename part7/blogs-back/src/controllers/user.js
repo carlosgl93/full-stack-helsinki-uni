@@ -3,11 +3,8 @@ const User = require("../models/user");
 const { hashPass, initialUsers } = require("../tests/test_helper");
 const jwt = require("jsonwebtoken");
 userRouter.get("/", async (req, res) => {
-  const users = await User.find({}).populate("blogs", {
-    title: 1,
-    url: 1,
-    likes: 1,
-  });
+  const users = await User.find({}).populate("blogs").exec();
+  console.log(users);
   res.json(users);
 });
 

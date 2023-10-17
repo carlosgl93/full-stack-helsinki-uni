@@ -1,0 +1,12 @@
+ul {
+  padding: 0;
+  list-style: none;
+  display: flex;
+  justify-content: space-around;
+}
+
+a {
+  text-decoration: none;
+  color: #754043;
+  font-weight: bold;
+}

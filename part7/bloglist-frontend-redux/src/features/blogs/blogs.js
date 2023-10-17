@@ -1,10 +1,13 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { createSlice } from "@reduxjs/toolkit";
+import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
+import { authApi } from "../../services/auth";
 const baseUrl = "/api/blogs";
 
 const initialState = {
   blogs: [],
 };
+
+const blogsAdapter = createEntityAdapter({});
 
 export const blogsSlice = createSlice({
   name: "blogs",
@@ -58,9 +61,10 @@ export const blogsApi = createApi({
           // },
         };
       },
-      invalidatesTags: ["blogs"],
+
+      invalidatesTags: (result, error, arg) => [{ type: "blogs", id: arg.id }],
     }),
-    getBlog: builder.mutation({
+    getBlog: builder.query({
       query: (id, token) => {
         return {
           url: `/${id}`,
@@ -70,6 +74,7 @@ export const blogsApi = createApi({
           },
         };
       },
+      providesTags: ["blog"],
     }),
   }),
 });
@@ -79,5 +84,5 @@ export const {
   useGetAllBlogsQuery,
   useCreateBlogMutation,
   useLikeBlogMutation,
-  useGetBlogMutation,
+  useGetBlogQuery,
 } = blogsApi;

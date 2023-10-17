@@ -53,26 +53,31 @@ const tokenExtractor = (request, response, next) => {
 };
 
 const userExtractor = async (request, response, next) => {
-  let decodedToken;
-  console.log(`HEADERS`, request.headers);
-  if (!request.headers.authorization)
-    res.status(401).json({
-      message: "Unauthorized, you need a token",
-      error: "No token",
-    });
+  try {
+    let decodedToken;
+    if (!request.headers.authorization)
+      response.status(401).json({
+        message: "Unauthorized, you need a token",
+        error: "No token",
+      });
 
-  decodedToken = jwt.verify(request.headers.authorization, process.env.SECRET);
+    decodedToken = jwt.verify(
+      request.headers.authorization,
+      process.env.SECRET
+    );
 
-  console.log("DECODED TOKEN", decodedToken);
-  if (!decodedToken || !decodedToken.id) {
-    response.status(401).json({ error: "Token invalid" }).end();
+    if (!decodedToken || !decodedToken.id) {
+      response.status(401).json({ error: "Token invalid" }).end();
+    }
+
+    const user = await User.findById(decodedToken.id);
+    if (user) {
+      request.user = user;
+    }
+    next();
+  } catch (error) {
+    response.json({ error: "Error in middleware user extractor" });
   }
-
-  const user = await User.findById(decodedToken.id);
-  if (user) {
-    request.user = user;
-  }
-  next();
 };
 
 module.exports = {
