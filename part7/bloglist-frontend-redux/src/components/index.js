@@ -1,4 +1,4 @@
-export * from "../routes/Blog/Blog";
+export * from "./Blog/BlogCard";
 export * from "./Togglable/Togglable";
 export * from "./BlogForm";
 export * from "./Notification";

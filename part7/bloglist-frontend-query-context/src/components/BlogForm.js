@@ -1,8 +1,44 @@
-import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { UiContext } from "../state/ui";
+import { useContext, useState } from "react";
+import { createBlog } from "../services/blogs";
+import { AuthContext } from "../state/auth";
 
-export const BlogForm = ({ handleCreateBlog }) => {
+export const BlogForm = () => {
   const [title, setTitle] = useState("");
   const [url, setUrl] = useState("");
+
+  const { toggleToast } = useContext(UiContext);
+  const { user } = useContext(AuthContext);
+
+  const queryClient = useQueryClient();
+
+  const newBlogMutation = useMutation({
+    mutationFn: createBlog,
+    onSuccess: (data) => {
+      queryClient.invalidateQueries(["blogs"]);
+      toggleToast("SUCCESS", "Blog created successfully");
+      setTitle("");
+      setUrl("");
+    },
+    onError: (error) => {
+      toggleToast(
+        "ERROR",
+        `Oops, something went wrong, please try again. ${error}`,
+      );
+    },
+  });
+
+  const handleCreateBlog = async (e) => {
+    e.preventDefault();
+    if (!title || !url) return;
+    const newBlog = {
+      title,
+      url,
+    };
+    newBlogMutation.mutate({ newBlog, userToken: user.token });
+  };
+
   return (
     <div>
       <h2>Create a new blog</h2>

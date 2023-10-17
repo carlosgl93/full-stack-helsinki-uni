@@ -1,20 +1,6 @@
 import axios from "axios";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+
 const baseUrl = "/api/blogs";
-
-export const blogsApi = createApi({
-  reducerPath: "blogsApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:3003/api/",
-  }),
-  endpoints: (builder) => ({
-    getAllBlogs: builder.query({
-      query: () => "blogs",
-    }),
-  }),
-});
-
-export const { useGetAllBlogsQuery } = blogsApi;
 
 let token = null;
 console.log(token);
@@ -25,10 +11,6 @@ const setToken = (newToken) => {
   console.log("token", token);
 };
 
-// const getAll = () => {
-//   const request = axios.get(baseUrl);
-//   return request.then((response) => response.data);
-// };
 const getBlog = async (id) => {
   console.log("is it here?");
   const request = await axios.get(`${baseUrl}/${id}`);
@@ -64,7 +46,7 @@ const deleteBlog = async (blogId) => {
   return request.data;
 };
 
-// eslint-disable-next-line
+// eslint - disable - next - line;
 export default {
   // getAll,
   getBlog,

@@ -1,0 +1,26 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #754043;
+}
+
+p {
+  color: #3a2618;
+}
+
+* {
+  background-color: #eff0d1;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  padding: 1%;
+}
+
+button {
+  border-radius: 5px;
+  border-color: #d7c0d0;
+}

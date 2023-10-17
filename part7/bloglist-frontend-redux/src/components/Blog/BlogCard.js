@@ -1,11 +1,23 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import blogService from "../../services/blogs";
-import { useLoaderData } from "react-router";
+import {
+  useGetBlogQuery,
+  useLikeBlogMutation,
+} from "../../features/blogs/blogs";
 
-export const Blog = ({ blog, userId, handleLike, setNotification }) => {
-  // const data = useLoaderData();
-  // console.log("data from blogs", data);
+export const BlogCard = ({ blog, userId, setNotification }) => {
+  console.log("BLOG PROP", blog);
+
   const [view, setView] = useState(true);
+  const [updatedBlog, setUpdatedBlog] = useState(blog);
+  const {
+    data: blogData,
+    error: blogError,
+    isLoading: blogLoading,
+  } = useGetBlogQuery(blog.id, blog.user);
+
+  console.log("BLOG DATA QUJERY", blogData);
 
   const blogStyle = {
     paddingTop: 10,
@@ -14,6 +26,15 @@ export const Blog = ({ blog, userId, handleLike, setNotification }) => {
     borderWidth: 1,
     marginBottom: 5,
   };
+
+  const [likeBlog, { error, data, isSuccess, isLoading }] =
+    useLikeBlogMutation();
+
+  const handleLike = async (blog) => {
+    await likeBlog(blog);
+    setUpdatedBlog(() => data);
+  };
+  console.log("UPDATED BLOG", data);
 
   const handleView = () => setView(!view);
 
@@ -43,6 +64,7 @@ export const Blog = ({ blog, userId, handleLike, setNotification }) => {
       }
     }
   };
+
   return (
     <div style={blogStyle} className="blog">
       <h4

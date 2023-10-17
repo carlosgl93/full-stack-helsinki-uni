@@ -10,14 +10,17 @@ const setToken = (newToken) => {
   console.log("token", token);
 };
 
-const getAll = () => {
+export const getAll = () => {
   const request = axios.get(baseUrl);
   return request.then((response) => response.data);
 };
 
-const create = async (newBlog) => {
+export const createBlog = async ({ newBlog, userToken }) => {
+  console.log(userToken);
+  console.log(newBlog);
+
   const config = {
-    headers: { Authorization: token },
+    headers: { authorization: userToken },
   };
 
   const request = await axios.post(baseUrl, newBlog, config);
@@ -33,10 +36,10 @@ const likeBlog = async (newBlog) => {
   return request.data;
 };
 
-const deleteBlog = async (blogId) => {
-  console.log(token);
+const deleteBlog = async (blogId, userToken) => {
+  console.log(userToken);
   const config = {
-    headers: { Authorization: token },
+    headers: { Authorization: userToken },
   };
   console.log("CONFIG", config);
 
@@ -44,5 +47,26 @@ const deleteBlog = async (blogId) => {
   return request.data;
 };
 
+const getOne = async (blogId) => {
+  const request = await axios.get(`${baseUrl}/${blogId}`);
+  return request.data;
+};
+
+const commentBlog = async ({ id, comment }) => {
+  console.log(id, comment);
+  const request = await axios.post(`${baseUrl}/${id}/comments`, {
+    comment,
+  });
+  return request.data;
+};
+
 // eslint-disable-next-line
-export default { getAll, create, setToken, likeBlog, deleteBlog };
+export default {
+  getAll,
+  createBlog,
+  setToken,
+  likeBlog,
+  deleteBlog,
+  getOne,
+  commentBlog,
+};

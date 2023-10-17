@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { BlogFormController } from "./BlogFormController";
 
-export const BlogForm = ({ handleCreateBlog }) => {
-  const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
+export const BlogForm = () => {
+  const { title, setTitle, url, setUrl, handleCreateBlog } =
+    BlogFormController();
+
   return (
     <div>
       <h2>Create a new blog</h2>
@@ -29,7 +30,7 @@ export const BlogForm = ({ handleCreateBlog }) => {
           />
         </div>
         <div>
-          <button type="submit" id="submitButton">
+          <button type="submit" id="submitButton" disabled={!title || !url}>
             Create
           </button>
         </div>

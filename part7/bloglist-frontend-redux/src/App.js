@@ -1,15 +1,14 @@
 import Router from "./routes/Router";
 import { Container } from "@mui/material";
 import { Nav, Notification } from "./components";
-import { useSelector } from "react-redux";
+import { AppController } from "./AppController";
 
 const App = () => {
-  const notification = useSelector((state) => state.notification);
+  const { showNotif, message, severity } = AppController();
 
   return (
     <>
       <Nav />
-
       <Container
         sx={{
           ml: {
@@ -19,14 +18,12 @@ const App = () => {
         }}
       >
         <Router />
-        {notification.show ? (
+        {showNotif && (
           <Notification
-            message={notification.message}
-            open={notification.show}
-            severity={notification.severity}
+            message={message}
+            open={showNotif}
+            severity={severity}
           />
-        ) : (
-          <>No notification</>
         )}
       </Container>
     </>

@@ -19,12 +19,15 @@ import Typography from "@mui/material/Typography";
 import { Link } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { LinkStyles } from "../../styles";
+import { useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
 export function Nav(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+
+  const { userInfo } = useSelector((state) => state.auth);
 
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
@@ -94,9 +97,15 @@ export function Nav(props) {
               Carlos Portfolio
             </Link>
           </Typography>
-          <Link sx={LinkStyles} component={RouterLink} to="auth/login">
-            Login
-          </Link>
+          {userInfo ? (
+            <Link sx={LinkStyles} component={RouterLink} to="/profile">
+              Profile
+            </Link>
+          ) : (
+            <Link sx={LinkStyles} component={RouterLink} to="auth/login">
+              Login
+            </Link>
+          )}
         </Toolbar>
       </AppBar>
       <Box

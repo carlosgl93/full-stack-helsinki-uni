@@ -1,88 +1,23 @@
-import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { Link as RouterLink } from "react-router-dom";
 import { Link } from "@mui/material";
-import { registerUser, useLoginQuery } from "../../services/auth";
-import {
-  resetNotification,
-  setNotification,
-} from "../../features/notification/notificationSlice";
-export const Signup = ({ setUser }) => {
-  // const { data: user, error, isLoading } = useLoginQuery();
-  const { loading, userInfo, error, success } = useSelector(
-    (state) => state.auth,
-  );
-  const dispatch = useDispatch();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    if (password !== confirmPassword) {
-      setErrorMessage("Passwords dont match");
-      setTimeout(() => {
-        setErrorMessage(null);
-      }, 5000);
-      return;
-    }
-    try {
-      const result = await dispatch(
-        registerUser({ firstname: name, email, password }),
-      );
-
-      console.log(result);
-      const error = result?.error;
-      const { data, status } = result.payload;
-      console.log(error, data, status);
-
-      if (error) throw new Error(error.message);
-
-      if (status === 201) {
-        setName("");
-        setPassword("");
-        setConfirmPassword("");
-        setEmail("");
-        dispatch(
-          setNotification({
-            message: data.message,
-            severity: "success",
-          }),
-        );
-        setTimeout(() => {
-          dispatch(resetNotification());
-        }, 5000);
-      }
-    } catch (error) {
-      console.log("error login in", error);
-      dispatch(
-        setNotification({
-          message: error.message,
-          severity: "error",
-        }),
-      );
-      setTimeout(() => {
-        dispatch(resetNotification());
-      }, 5000);
-    }
-  };
+import { SignupController } from "./SignupController";
+export const Signup = () => {
+  const {
+    name,
+    email,
+    password,
+    confirmPassword,
+    setName,
+    setEmail,
+    setPassword,
+    setConfirmPassword,
+    handleSubmit,
+  } = SignupController();
 
   return (
     <div>
       <h3>Register</h3>
-
-      {errorMessage && (
-        <div
-          style={{
-            backgroundColor: "red",
-          }}
-        >
-          <h4>{errorMessage}</h4>
-        </div>
-      )}
 
       <form onSubmit={handleSubmit}>
         <div>
@@ -126,8 +61,14 @@ export const Signup = ({ setUser }) => {
           />
         </div>
         <div>
-          <button id="login-submit" type="submit">
-            Register
+          <button
+            id="login-submit"
+            type="submit"
+            disabled={!name || !email || !password || !confirmPassword}
+          >
+            {!name || !email || !password || !confirmPassword
+              ? "Enter your information"
+              : "Register"}
           </button>
         </div>
       </form>

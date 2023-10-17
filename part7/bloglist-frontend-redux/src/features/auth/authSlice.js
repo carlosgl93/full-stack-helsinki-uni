@@ -1,6 +1,6 @@
 // authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
-import { registerUser } from "../../services/auth";
+import { login, registerUser } from "../../services/auth";
 
 const initialState = {
   loading: false,
@@ -13,21 +13,48 @@ const initialState = {
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
-  extraReducers: {
-    // register user
-    [registerUser.pending]: (state) => {
-      state.loading = true;
-      state.error = null;
+  reducers: {
+    setUser: (state, action) => {
+      return {
+        ...state,
+        userInfo: action.payload,
+        success: true,
+      };
     },
-    [registerUser.fulfilled]: (state, { payload }) => {
-      state.loading = false;
-      state.success = true; // registration successful
-    },
-    [registerUser.rejected]: (state, { payload }) => {
-      state.loading = false;
-      state.error = payload;
+    logout: () => {
+      return initialState;
     },
   },
+  extraReducers: (builder) => {
+    return {
+      // register user
+      [registerUser.pending]: (state) => {
+        state.loading = true;
+        state.error = null;
+      },
+      [registerUser.fulfilled]: (state, { payload }) => {
+        state.loading = false;
+        state.success = true; // registration successful
+      },
+      [registerUser.rejected]: (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      },
+      [login.pending]: (state) => {
+        state.loading = true;
+        state.error = null;
+      },
+      [login.fulfilled]: (state, { payload }) => {
+        state.loading = false;
+        state.success = true; // registration successful
+      },
+      [login.rejected]: (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      },
+    };
+  },
 });
+
+export const { setUser, logout } = authSlice.actions;
 export default authSlice.reducer;
