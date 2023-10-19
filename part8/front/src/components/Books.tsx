@@ -26,14 +26,14 @@ export const Books: FC = () => {
           {showForm ? "Close" : "Add a book"}
         </button>
 
-        {showForm && <BookForm />}
+        {showForm && <BookForm setShowForm={setShowForm} />}
 
         <table>
           <thead>
             <tr>
               <td>Name</td>
               <td>Born</td>
-              <td>Number of books</td>
+              <td>Published</td>
             </tr>
           </thead>
           <tbody>
