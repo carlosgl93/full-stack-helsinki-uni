@@ -1,4 +1,3 @@
-const { books, authors } = require("./data");
 const { addBook } = require("./mutations/addBook");
 const { editAuthor } = require("./mutations/editAuthor");
 const { allAuthors } = require("./queries/allAuthors");

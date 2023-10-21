@@ -32,9 +32,18 @@ const addBook = async (args) => {
         bookCount: 1,
       });
 
-      const resultAuthor = await newAuthor.save();
-      console.log("resutltAuthor", resultAuthor);
-      newBook.author = newAuthor;
+      try {
+        const resultAuthor = await newAuthor.save();
+        newBook.author = newAuthor;
+      } catch (error) {
+        console.log("error creating author", error.message);
+        if (
+          error.message.includes("name") &&
+          error.message.includes("shorter")
+        ) {
+          throw new GraphQLError("Author name is too short!");
+        }
+      }
     }
     //      save the new book
     const savedBook = new Book({ ...newBook });
@@ -42,6 +51,9 @@ const addBook = async (args) => {
     return result;
   } catch (error) {
     console.log(error);
+    if (error.message.includes("title") && error.message.includes("shorter")) {
+      throw new GraphQLError("Title is too short!");
+    }
     throw new Error(error);
   }
 };

@@ -6,6 +6,7 @@ let typeDefs = `
     allBooks(author: String, genres: [GENRES]): [Book]
     allAuthors: [Author]
     findAuthorByName(name: String!): AuthorWithBooks
+    me: User
   }
   
   type Mutation {
@@ -16,7 +17,14 @@ let typeDefs = `
         genres: [GENRES]
     ): Book
     editAuthor(name: String! year: Int): Author
-    
+    createUser(
+    username: String!
+    favoriteGenre: String!
+  ): User
+  login(
+    username: String!
+    password: String!
+  ): Token
     
   }
   
@@ -67,6 +75,16 @@ let typeDefs = `
     author: Author
     books: [Book]
   }
+  
+  type User {
+  username: String!
+  favoriteGenre: String!
+  id: ID!
+}
+
+type Token {
+  value: String!
+}
 `;
 
 module.exports = {
