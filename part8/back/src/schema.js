@@ -19,7 +19,8 @@ let typeDefs = `
     editAuthor(name: String! year: Int): Author
     createUser(
     username: String!
-    favoriteGenre: String!
+    password: String!
+    favoriteGenre: String
   ): User
   login(
     username: String!
@@ -78,7 +79,7 @@ let typeDefs = `
   
   type User {
   username: String!
-  favoriteGenre: String!
+  favoriteGenre: String
   id: ID!
 }
 
