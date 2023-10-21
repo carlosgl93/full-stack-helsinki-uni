@@ -1,4 +1,4 @@
-const typeDefs = `
+export const typeDefs = `
   type Query {
     dummy: Int
     bookCount: Int
@@ -15,7 +15,7 @@ const typeDefs = `
         published: Int
         genres: [GENRES]
     ): Book
-    updateBornYear(name: String! year: Int!): Author
+    editAuthor(name: String! year: Int): Author
     
     
   }
@@ -28,6 +28,26 @@ const typeDefs = `
     design
     agile
     patterns
+    Mystery
+    Fantasy
+    Romance
+    Thriller
+    Horror
+    Biography
+    Self Help
+    Fiction
+    Science
+    Travel
+    Poetry
+    Drama
+    Young Adult
+    Literature
+    Crime
+    Children
+    Adventure
+    ScienceFiction
+    NonFiction
+    Philosophy
   }
   
   type Book {
@@ -48,7 +68,3 @@ const typeDefs = `
     books: [Book]
   }
 `;
-
-module.exports = {
-  typeDefs,
-};

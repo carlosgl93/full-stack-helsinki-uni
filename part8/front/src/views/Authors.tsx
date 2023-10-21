@@ -1,6 +1,8 @@
 import { FC, useState } from "react";
 import { useQuery } from "@apollo/client";
+
 import Author from "../components/Author";
+import { AuthorForm } from "../components/AuthorForm";
 import { Author as AuthorType } from "../types";
 import { FIND_AUTHOR } from "../graphql/queries/findAuthor";
 import { ALL_AUTHORS } from "../graphql";
@@ -9,6 +11,7 @@ type AuthorsProps = {};
 
 const Authors: FC<AuthorsProps> = () => {
   const [name, setName] = useState("");
+  const [editedAuthor, setEditedAuthor] = useState<null | AuthorType>(null);
   const authorsResult = useQuery(ALL_AUTHORS);
 
   const result = useQuery(FIND_AUTHOR, {
@@ -34,6 +37,9 @@ const Authors: FC<AuthorsProps> = () => {
     <div>
       <h1>Authors</h1>
       <div>
+        {editedAuthor && (
+          <AuthorForm author={editedAuthor} setEditedAuthor={setEditedAuthor} />
+        )}
         <table>
           <thead>
             <tr>
@@ -44,7 +50,7 @@ const Authors: FC<AuthorsProps> = () => {
           </thead>
           <tbody>
             {authorsResult.data.allAuthors.map((a: AuthorType) => (
-              <tr key={a.id + a.name}>
+              <tr key={a.id + a.name} onClick={() => setEditedAuthor(a)}>
                 <td>{a.name}</td>
                 <td>{a?.born}</td>
                 <td>{a.bookCount}</td>

@@ -50,7 +50,7 @@ type BookFormProps = {
 
 export const BookForm: FC<BookFormProps> = ({ setShowForm }) => {
   const [state, dispatch] = useReducer(formReducer, INITIAL_FORM_STATE);
-  const [addBook, { data, loading, error }] = useMutation(ADD_BOOK, {
+  const [addBook, { loading, error }] = useMutation(ADD_BOOK, {
     refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
     onCompleted: () => {
       dispatch({
@@ -182,10 +182,6 @@ export const BookForm: FC<BookFormProps> = ({ setShowForm }) => {
           </tr>
         </tbody>
       </table>
-      <div></div>
-      <div></div>
-      <div></div>
-      <div></div>
 
       <button type="submit">Create Book</button>
     </form>

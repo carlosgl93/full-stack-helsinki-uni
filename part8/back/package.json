@@ -4,13 +4,24 @@
   "description": "Helsinki Open Full stack unit 8",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "node ./src/index.js",
+    "tsc": "tsc"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@apollo/server": "^4.9.4",
+    "@types/mongodb": "^4.0.7",
+    "apollo-log": "^1.1.0",
+    "dotenv": "^16.3.1",
     "graphql": "^16.8.1",
+    "mongoose": "^7.6.3",
+    "mongoose-unique-validator": "^4.0.0",
+    "typescript": "^5.2.2",
     "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.8.7"
   }
 }
