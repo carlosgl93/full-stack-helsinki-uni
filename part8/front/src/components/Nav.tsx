@@ -1,7 +1,12 @@
+import { useContext } from "react";
 import { Link } from "react-router-dom";
+import { Context } from "../state/Context";
 import "../styles/nav.css";
 
 export const Nav = () => {
+  const { user, logout } = useContext(Context);
+  const handleLogout = () => logout()
+
   return (
     <nav>
       <ul>
@@ -13,6 +18,15 @@ export const Nav = () => {
         </li>
         <li>
           <Link to={"/books"}>Books</Link>
+        </li>
+        <li>
+          {user ? (
+            <Link to={"/signin"} onClick={handleLogout}>
+              Logout
+            </Link>
+          ) : (
+            <Link to={"/signin"}>Login</Link>
+          )}
         </li>
       </ul>
     </nav>

@@ -20,6 +20,18 @@ export const AuthorForm: FC<AuthorFormProps> = ({
     onCompleted: () => {
       setEditedAuthor(null);
     },
+    update: (cache, response) => {
+      cache.updateQuery(
+        {
+          query: ALL_AUTHORS,
+        },
+        ({ allAuthors }) => {
+          return {
+            allAuthors: allAuthors.concat(response.data.editAuthor),
+          };
+        }
+      );
+    },
   });
 
   if (loading || mutationResult.loading) {

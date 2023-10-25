@@ -1,3 +1,5 @@
+import { Author } from ".";
+
 export enum GENRES {
   classic,
   revolution,
@@ -11,7 +13,7 @@ export enum GENRES {
 export type Book = {
   title: string;
   published?: number;
-  author: string;
+  author: Author;
   id: string;
   genres?: [GENRES];
 };

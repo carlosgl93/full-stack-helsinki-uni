@@ -17,6 +17,7 @@ export const Books: FC = () => {
   }
 
   if (data.allBooks) {
+    console.log(data.allBooks);
     return (
       <>
         <header>
@@ -46,7 +47,7 @@ export const Books: FC = () => {
                 >
                   {b.title}
                 </td>
-                <td>{b.author}</td>
+                <td>{b.author.name}</td>
                 <td>{b.published}</td>
               </tr>
             ))}

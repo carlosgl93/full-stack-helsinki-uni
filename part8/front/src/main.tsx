@@ -4,35 +4,42 @@ import { BrowserRouter as Router } from "react-router-dom";
 import {
   ApolloClient,
   InMemoryCache,
-  gql,
   ApolloProvider,
+  createHttpLink,
 } from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
 import App from "./App.tsx";
 import "./index.css";
+import Provider from "./state/Provider.tsx";
+
+const authLink = setContext((_, { headers }) => {
+  const user = JSON.parse(localStorage?.getItem("blogs-gql")!);
+  return {
+    headers: {
+      ...headers,
+      authorization: user?.token ? `Bearer ${user?.token}` : null,
+    },
+  };
+});
+
+const httpLink = createHttpLink({
+  uri: "http://localhost:4000/",
+});
 
 const client = new ApolloClient({
-  uri: "http://localhost:4000/graphql",
+  link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });
 
-const query = gql`
-  query {
-    allBooks {
-      title
-    }
-  }
-`;
-
-client.query({ query }).then((response) => {
-  console.log(response.data);
-});
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <Router>
-        <App />
-      </Router>
+      <Provider>
+        <Router>
+          <App />
+        </Router>
+      </Provider>
     </ApolloProvider>
   </React.StrictMode>
 );
