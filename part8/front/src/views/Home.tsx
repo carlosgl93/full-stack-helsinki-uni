@@ -1,5 +1,5 @@
-import Authors from "./Authors";
-import { Books } from "../components/Books";
+import { Authors } from "./Authors";
+import { Books } from "./Books";
 
 export const Home = () => {
   return (

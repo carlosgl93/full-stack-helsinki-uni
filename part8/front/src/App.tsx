@@ -6,7 +6,10 @@ export const App = () => {
   return (
     <>
       <Nav />
+      <main>
       <Router />
+        
+      </main>
     </>
   );
 };

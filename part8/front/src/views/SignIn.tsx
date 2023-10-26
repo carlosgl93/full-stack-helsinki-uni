@@ -3,6 +3,7 @@ import React, { useContext, useReducer } from "react";
 import { LOGIN } from "../graphql/mutations/login";
 import { useNavigate } from "react-router";
 import { Context } from "../state/Context";
+import '../styles/signInForm.css'
 
 type INITIAL_FORM_STATE = {
   username: string;
@@ -96,16 +97,24 @@ export const SignIn = () => {
   };
 
   return (
-    <main>
+    <>
       {state.error && (
-        <figure>
+        <figure style={{
+          color: 'red'
+        }}>
           <figcaption>{state.error.message}</figcaption>
           <p>{state.error.extraInfo}</p>
         </figure>
       )}
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="username">Username</label>
-        <input
+      <form id="signin" onSubmit={handleSubmit}>
+        <div className="labels">
+        <label htmlFor="username">Username:</label>
+        <br />
+        <label htmlFor="password">Password:</label>
+          
+        </div>
+        <div className="inputs">
+          <input
           type="text"
           name="username"
           id="username"
@@ -120,7 +129,7 @@ export const SignIn = () => {
             })
           }
         />
-        <label htmlFor="password">Password</label>
+        <br/>
         <input
           type="password"
           name="password"
@@ -136,10 +145,15 @@ export const SignIn = () => {
             })
           }
         />
-        <button type="submit" disabled={!state.password}>
+        </div>
+
+        <br/>
+        
+       
+      </form>
+       <button form="signin" type="submit" disabled={!state.password}>
           Login
         </button>
-      </form>
-    </main>
+    </>
   );
 };

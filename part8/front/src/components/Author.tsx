@@ -8,7 +8,12 @@ type AuthorProps = {
 };
 
 const Author = (props: AuthorProps) => {
+  console.log(props)
   const { author, books } = props.author;
+  
+  if (!author || !books) {
+    return <p>There was an issue finding the author</p>
+  }
 
   return (
     <div>

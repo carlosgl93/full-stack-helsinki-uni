@@ -9,7 +9,7 @@ import { ALL_AUTHORS } from "../graphql";
 
 type AuthorsProps = {};
 
-const Authors: FC<AuthorsProps> = () => {
+export const Authors: FC<AuthorsProps> = () => {
   const [name, setName] = useState("");
   const [editedAuthor, setEditedAuthor] = useState<null | AuthorType>(null);
   const authorsResult = useQuery(ALL_AUTHORS);
@@ -43,14 +43,14 @@ const Authors: FC<AuthorsProps> = () => {
         <table>
           <thead>
             <tr>
-              <td>Name</td>
-              <td>Born</td>
-              <td>Number of books</td>
+              <th>Name</th>
+              <th>Born</th>
+              <th>Number of books</th>
             </tr>
           </thead>
           <tbody>
             {authorsResult.data.allAuthors.map((a: AuthorType) => (
-              <tr key={a.id + a.name} onClick={() => setEditedAuthor(a)}>
+              <tr key={a.id + a.name} onClick={() => setEditedAuthor(() => a)}>
                 <td>{a.name}</td>
                 <td>{a?.born}</td>
                 <td>{a.bookCount}</td>
@@ -66,4 +66,3 @@ const Authors: FC<AuthorsProps> = () => {
   );
 };
 
-export default Authors;

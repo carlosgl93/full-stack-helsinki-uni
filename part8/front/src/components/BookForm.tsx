@@ -30,13 +30,15 @@ export const BookForm: FC<BookFormProps> = ({ setShowForm }) => {
       style={{
         display: "flex",
         flexDirection: "column",
-        justifyContent: "space-around",
+        justifyContent: "space-around"
       }}
     >
       <table>
         <thead>
-          <td>Field</td>
-          <td>Value</td>
+          <tr>
+            <td>Field</td>
+            <td>Value</td>
+          </tr>
         </thead>
         <tbody>
           <tr>
@@ -60,14 +62,7 @@ export const BookForm: FC<BookFormProps> = ({ setShowForm }) => {
               <label htmlFor="author">Author *</label>
             </td>
             <td>
-              <input
-                required
-                type="text"
-                name="author"
-                id="author"
-                value={state.author}
-                onChange={handleChangeInput}
-              />
+              <input required type="text" name="author" id="author" value={state.author} onChange={handleChangeInput} />
             </td>
           </tr>
           <tr>
@@ -89,14 +84,8 @@ export const BookForm: FC<BookFormProps> = ({ setShowForm }) => {
               <label htmlFor="genres">Genres</label>
             </td>
             <td>
-              <select
-                multiple
-                name="genres"
-                id="genres"
-                value={state.genres}
-                onChange={handleSelectGenre}
-              >
-                {Object.values(Genres).map((g) => (
+              <select multiple name="genres" id="genres" value={state.genres} onChange={handleSelectGenre}>
+                {Object.values(Genres).map(g => (
                   <option key={g} value={g}>
                     {g}
                   </option>

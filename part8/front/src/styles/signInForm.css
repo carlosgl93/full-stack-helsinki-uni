@@ -1,0 +1,8 @@
+form {
+    display: flex
+}
+
+form > div {
+    margin: 5vw
+}
+
