@@ -7,6 +7,7 @@ let typeDefs = `
     allAuthors: [Author]
     findAuthorByName(name: String!): AuthorWithBooks
     me: User
+    recommendedBooks(genre: String!): [Book]
   }
   
   type Mutation {
@@ -25,7 +26,9 @@ let typeDefs = `
   login(
     username: String!
     password: String!
-  ): Token
+  ): LoggedInUser
+  findAuthorByName(name: String!): Author
+  setFavoriteGenre(genre: String!): [Book]
     
   }
   
@@ -85,6 +88,13 @@ let typeDefs = `
 
 type Token {
   value: String!
+}
+
+type LoggedInUser {
+  username: String
+  favoriteGenre: String
+  id: ID!
+  token: String
 }
 `;
 

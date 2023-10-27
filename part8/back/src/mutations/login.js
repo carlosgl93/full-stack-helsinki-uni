@@ -18,11 +18,13 @@ const login = async (args) => {
 
   const userForToken = {
     username: user.username,
+    favoriteGenre: user.favoriteGenre,
     id: user._id,
   };
 
   return {
-    value: jwt.sign(userForToken, process.env.JWT_SECRET),
+    ...userForToken,
+    token: jwt.sign(userForToken, process.env.JWT_SECRET),
   };
 };
 

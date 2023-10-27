@@ -3,10 +3,8 @@ const { startStandaloneServer } = require("@apollo/server/standalone");
 const { typeDefs } = require("./schema");
 const { resolvers } = require("./resolvers");
 const { mongoose } = require("mongoose");
-const { AuthorModel } = require("./models/authors");
-const { BookModel } = require("./models/books");
 const jwt = require("jsonwebtoken");
-const User = require("./models/users");
+const users = require("./models/users")
 require("dotenv").config();
 
 mongoose.set("strictQuery", false);
@@ -32,15 +30,17 @@ startStandaloneServer(server, {
   context: async ({ req, res }) => {
     const auth = req ? req.headers.authorization : null;
     if (auth && auth.startsWith("Bearer ")) {
-      const decodedToken = jwt.verify(
+      const decodedToken = jwt.verify(  
         auth.substring(7),
         process.env.JWT_SECRET
       );
+      console.log("decodedToken", decodedToken);
       const currentUser = await users.findById(decodedToken.id);
-
+      console.log("current User", currentUser);
       return { currentUser };
     }
   },
 }).then((res) => {
   console.log(`Server ready at ${res.url}`);
+  console.log(res);
 });

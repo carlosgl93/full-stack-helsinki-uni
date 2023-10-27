@@ -11,6 +11,7 @@ const schema = new mongoose.Schema({
     minlength: 5,
   },
   password: [{ type: String, required: true, minlength: 6 }],
+  favoriteGenre: {type: String}
 });
 
 schema.plugin(uniqueValidator);
