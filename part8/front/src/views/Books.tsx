@@ -4,6 +4,7 @@ import { ALL_BOOKS } from '../graphql';
 import { Book as BookType, Genres } from '../types';
 import { BookForm } from '../components';
 import { Context } from '../state/Context';
+import '../styles/books.css'
 
 export const Books: FC = () => {
   const { user } = useContext(Context);
@@ -16,8 +17,6 @@ export const Books: FC = () => {
     setGenreFilter(e.target.value as Genres);
   };
   
-  console.log(user)
-
   if (loading) {
     return <p>Loading...</p>;
   }

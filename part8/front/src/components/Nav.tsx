@@ -11,21 +11,27 @@ export const Nav = () => {
     <nav>
       <ul>
         <li>
-          <Link to={"/"}>Home</Link>
+          <Link to={'/'}>Home</Link>
         </li>
         <li>
-          <Link to={"/authors"}>Authors</Link>
+          <Link to={'/authors'}>Authors</Link>
         </li>
         <li>
-          <Link to={"/books"}>Books</Link>
+          <Link to={'/books'}>Books</Link>
         </li>
+        {user && (
+          <li>
+            <Link to={'/recommended'}>Recommended</Link>
+          </li>
+        )}
+
         <li>
           {user ? (
-            <Link to={"/signin"} onClick={handleLogout}>
+            <Link to={'/signin'} onClick={handleLogout}>
               Logout
             </Link>
           ) : (
-            <Link to={"/signin"}>Login</Link>
+            <Link to={'/signin'}>Login</Link>
           )}
         </li>
       </ul>

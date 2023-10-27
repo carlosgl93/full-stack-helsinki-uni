@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router";
-import { Home, Authors, Books, SignIn} from '.'
+import { Home, Authors, Books, SignIn, Recommended} from '.'
 
 export const Router = () => {
   return (
@@ -8,6 +8,7 @@ export const Router = () => {
       <Route path="/authors" element={<Authors />} />
       <Route path="/books" element={<Books />} />
       <Route path="/signin" element={<SignIn />} />
+      <Route path="/recommended" element={<Recommended />}/>
     </Routes>
   );
 };

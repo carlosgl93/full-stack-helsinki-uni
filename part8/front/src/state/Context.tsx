@@ -6,6 +6,7 @@ interface ContextProps {
 
   login: (user: User) => void;
   logout: () => void;
+  setUserFavoriteGenre: (genre: string) => void;
 }
 
 export const Context = createContext({} as ContextProps);

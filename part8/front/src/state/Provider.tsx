@@ -21,10 +21,10 @@ const Provider: FC<ProviderProps> = ({ children }) => {
   const client = useApolloClient();
 
   useEffect(() => {
-    const user = localStorage.getItem("blogs-gql");
+    const user = localStorage.getItem('blogs-gql');
     if (user) {
       dispatch({
-        type: "[Auth]- Login",
+        type: '[Auth]- Login',
         payload: JSON.parse(user),
       });
     }
@@ -32,7 +32,7 @@ const Provider: FC<ProviderProps> = ({ children }) => {
 
   const login = (user: User) => {
     dispatch({
-      type: "[Auth]- Login",
+      type: '[Auth]- Login',
       payload: user,
     });
   };
@@ -41,7 +41,14 @@ const Provider: FC<ProviderProps> = ({ children }) => {
     localStorage.clear();
     client.clearStore();
     dispatch({
-      type: "[Auth]- Logout",
+      type: '[Auth]- Logout',
+    });
+  };
+
+  const setUserFavoriteGenre = (genre: string) => {
+    dispatch({
+      type: '[Preferences]- Set Favorite Genre',
+      payload: genre,
     });
   };
 
@@ -52,6 +59,7 @@ const Provider: FC<ProviderProps> = ({ children }) => {
 
         login,
         logout,
+        setUserFavoriteGenre,
       }}
     >
       {children}
