@@ -62,6 +62,10 @@ let typeDefs = `
     Philosophy
   }
   
+  type Subscription {
+    addBook: Book!
+  }
+  
   type Book {
     title: String!
     published: Int

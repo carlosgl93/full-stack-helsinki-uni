@@ -1,3 +1,4 @@
+const { PubSub } = require('graphql-subscriptions')
 const { addBook } = require("./mutations/addBook");
 const { createUser } = require("./mutations/createUser");
 const { editAuthor } = require("./mutations/editAuthor");
@@ -9,6 +10,9 @@ const { authorCount } = require("./queries/authorCount");
 const { bookCount } = require("./queries/bookCount");
 const { findAuthorByName } = require("./queries/findAuthorByName");
 const { recommendedBooks } = require("./queries/recommendedBooks");
+
+const pubsub = new PubSub()
+
 
 const resolvers = {
   Query: {
@@ -26,7 +30,12 @@ const resolvers = {
     login: (root, args) => login(args),
     createUser: (root, args) => createUser(args),
     setFavoriteGenre: (root, args, context) => setFavoriteGenre(args, context)
-  }
+  },
+  Subscription: {
+    addBook: {
+      subscribe: () => pubsub.asyncIterator('ADD_BOOK')
+    },
+  },
 };
 
 module.exports = { resolvers };

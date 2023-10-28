@@ -28,7 +28,7 @@ const addBook = async (args) => {
     } else {
       //   else create new author
       const newAuthor = new Author({
-        name: newBook.author,
+        name: newBook.author.toLowerCase(),
         bookCount: 1,
       });
 
@@ -48,6 +48,9 @@ const addBook = async (args) => {
     //      save the new book
     const savedBook = new Book({ ...newBook });
     const result = await savedBook.save();
+    
+    pubsub.publish('ADD_BOOK', { addBook: result })
+    
     return result;
   } catch (error) {
     console.log(error);

@@ -4,7 +4,7 @@ const editAuthor = async (args) => {
   console.log(args);
   const updatedAuthor = await Author.findOneAndUpdate(
     {
-      name: args.name,
+      name: args.name.lowerCase(),
     },
     {
       born: args.year,
