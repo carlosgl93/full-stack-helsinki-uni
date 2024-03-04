@@ -1,3 +1,5 @@
+import { parseCalculatorArguments } from "./parseCalculatorArguments";
+
 interface Result {
   periodLength: number;
   trainingDays: number;
@@ -8,7 +10,11 @@ interface Result {
   average: number;
 }
 
-export const calculateExercises = (dailyHours: number[], target: number): Result => {
+export const calculateExercises = (): Result => {
+  console.log(process.argv);
+  const { dailyHours, target } = parseCalculatorArguments(process.argv);
+
+  console.log(dailyHours, target);
   const periodLength = dailyHours.length;
   const trainingDays = dailyHours.filter(hours => hours > 0).length;
   const average = dailyHours.reduce((a, b) => a + b, 0) / periodLength;
@@ -26,4 +32,4 @@ export const calculateExercises = (dailyHours: number[], target: number): Result
   };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+console.log(calculateExercises());

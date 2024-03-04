@@ -1,4 +1,8 @@
-export const calculateBmi = (height: number, weight: number): string => {
+import { parseBmiArguments } from "./parseBmiArguments";
+
+export const calculateBmi = (): string => {
+  const { height, weight } = parseBmiArguments(process.argv);
+
   const bmi = weight / Math.pow(height / 100, 2);
   if (bmi < 18.5) {
     return "Underweight";
