@@ -1,7 +1,18 @@
-import patientsData from "../../sampleData.json";
+import patientsData from "../../patientsData";
+import { Patient } from "../types";
 
-const getEntries = () => {
+const getEntries = (): Patient[] => {
   return patientsData;
+};
+
+const getNonSensitivePatientsData = (): Omit<Patient, "ssn">[] => {
+  return patientsData.map(({ id, name, dateOfBirth, gender, occupation }) => ({
+    id,
+    name,
+    dateOfBirth,
+    gender,
+    occupation
+  }));
 };
 
 const addPatient = () => {
@@ -10,5 +21,6 @@ const addPatient = () => {
 
 export default {
   getEntries,
-  addPatient
+  addPatient,
+  getNonSensitivePatientsData
 };
