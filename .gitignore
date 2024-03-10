@@ -26,7 +26,17 @@ part9/*/node_modules
 part9/node_modules
 part9/partB/node_modules
 part9/partC/backend/node_modules
-
+*/*/*/node_modules
+*/*/node_modules
+*/*/*/node_modules
+*/*/*/*/node_modules
+*/*/*/*/*/node_modules
+*/*/*/*/*/*/node_modules
+*/*/*/*/*/*/*/node_modules
+*/*/*/*/*/*/*/*/node_modules
+*/*/*/*/*/*/*/*/*/node_modules
+*/*/*/*/*/*/*/*/*/*/node_modules
+*/*/*/*/*/*/*/*/*/*/*/node_modules
 
 
 
