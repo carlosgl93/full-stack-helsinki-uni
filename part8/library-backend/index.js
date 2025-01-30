@@ -1,5 +1,6 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
+const { v1: uuid } = require("uuid");
 
 let authors = [
   {
@@ -93,6 +94,8 @@ const typeDefs = `
     revolution
     patterns
     agile
+    database
+    nosql
   }
 
   type Book {
@@ -115,6 +118,10 @@ const typeDefs = `
     authorCount: Int!
     allBooks(author: String, genre: Genre): [Book!]!
     allAuthors: [Author!]!
+  }
+    
+  type Mutation {
+    addBook(title: String! published: Int genres: [Genre]): Book
   }
 `;
 
@@ -144,6 +151,21 @@ const resolvers = {
           bookCount: authorBooks.length
         };
       });
+    }
+  },
+  Mutation: {
+    addBook: (root, args) => {
+      if (books.find(b => b.title === args.title)) {
+        throw new GraphQLError("Title of the book must be unique", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.title
+          }
+        });
+      }
+      const newBook = { ...args, id: uuid() };
+      books.push(newBook);
+      return newBook;
     }
   }
 };
