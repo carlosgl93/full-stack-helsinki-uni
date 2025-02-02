@@ -166,29 +166,28 @@ const resolvers = {
           }
         });
       }
+      let foundAuthor = authors.find(a => a.name === author);
 
-      if (author) {
-        if (authors.find(a => a.name === author)) {
-          throw new GraphQLError("The author already exists", {
-            extensions: {
-              code: "BAD_USER_INPUT",
-              invalidArgs: author
-            }
-          });
-        }
-
-        const newAuthor = { name: author, id: uuid() };
+      if (foundAuthor) {
+        const newBook = { ...args, id: uuid(), authorId: foundAuthor.id };
+        books.push(newBook);
+        return newBook;
+      } else {
+        const newAuthor = {
+          id: uuid(),
+          name: author
+        };
         authors.push(newAuthor);
+        const newBook = { ...args, id: uuid(), authorId: newAuthor.id };
+        books.push(newBook);
+        return newBook;
       }
-
-      const newBook = { ...args, id: uuid() };
-      books.push(newBook);
-      return newBook;
     },
     editAuthor: (root, args) => {
       const { name, setBornTo } = args;
-
-      const foundAuthor = authors.find(a => a.name === name);
+      console.log(name);
+      const foundAuthor = authors.find(a => a.name.toLowerCase().trim() === name.toLowerCase().trim());
+      console.log(foundAuthor);
       if (foundAuthor) {
         const updatedAuthor = {
           ...foundAuthor,
@@ -198,7 +197,6 @@ const resolvers = {
 
         return updatedAuthor;
       }
-      return null;
 
       throw new GraphQLError("No author found by that name", {
         extensions: {
