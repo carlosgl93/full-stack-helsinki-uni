@@ -122,7 +122,10 @@ const resolvers = {
     }
   },
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, ctx) => {
+      if (!ctx.currentUser) {
+        throw new ForbiddenGQLError();
+      }
       const { title, author } = args;
       if (
         await Book.findOne({
@@ -166,7 +169,11 @@ const resolvers = {
         });
       }
     },
-    editAuthor: async (root, args) => {
+    editAuthor: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new ForbiddenGQLError();
+      }
+
       const { name, setBornTo } = args;
       const foundAuthor = await Author.findOneAndUpdate(
         {
@@ -252,3 +259,13 @@ startStandaloneServer(server, {
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`);
 });
+
+class ForbiddenGQLError extends GraphQLError {
+  constructor() {
+    super("You need to log in to perform this operation", {
+      extensions: {
+        code: "FORBIDDEN"
+      }
+    });
+  }
+}
