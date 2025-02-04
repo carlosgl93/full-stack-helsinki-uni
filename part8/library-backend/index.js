@@ -1,11 +1,11 @@
 const { ApolloServer } = require("@apollo/server");
 const { startStandaloneServer } = require("@apollo/server/standalone");
-const { v1: uuid } = require("uuid");
 const { GraphQLError } = require("graphql");
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const Book = require("./src/models/Book");
 const Author = require("./src/models/Author");
+const User = require("./src/models/User");
 
 mongoose.set("strictQuery", false);
 require("dotenv").config();
@@ -22,84 +22,6 @@ mongoose
   .catch(error => {
     console.log("error connecting to mongo db: ", error.message);
   });
-
-let authors = [
-  {
-    name: "Robert Martin",
-    id: "afa51ab0-344d-11e9-a414-719c6709cf3e",
-    born: 1952
-  },
-  {
-    name: "Martin Fowler",
-    id: "afa5b6f0-344d-11e9-a414-719c6709cf3e",
-    born: 1963
-  },
-  {
-    name: "Fyodor Dostoevsky",
-    id: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
-    born: 1821
-  },
-  {
-    name: "Joshua Kerievsky", // birthyear not known
-    id: "afa5b6f2-344d-11e9-a414-719c6709cf3e"
-  },
-  {
-    name: "Sandi Metz", // birthyear not known
-    id: "afa5b6f3-344d-11e9-a414-719c6709cf3e"
-  }
-];
-
-let books = [
-  {
-    title: "Clean Code",
-    published: 2008,
-    authorId: "afa51ab0-344d-11e9-a414-719c6709cf3e",
-    id: "afa5b6f4-344d-11e9-a414-719c6709cf3e",
-    genres: ["refactoring"]
-  },
-  {
-    title: "Agile software development",
-    published: 2002,
-    authorId: "afa51ab0-344d-11e9-a414-719c6709cf3e",
-    id: "afa5b6f5-344d-11e9-a414-719c6709cf3e",
-    genres: ["agile", "patterns", "design"]
-  },
-  {
-    title: "Refactoring, edition 2",
-    published: 2018,
-    authorId: "afa5b6f0-344d-11e9-a414-719c6709cf3e",
-    id: "afa5de00-344d-11e9-a414-719c6709cf3e",
-    genres: ["refactoring"]
-  },
-  {
-    title: "Refactoring to patterns",
-    published: 2008,
-    authorId: "afa5b6f2-344d-11e9-a414-719c6709cf3e",
-    id: "afa5de01-344d-11e9-a414-719c6709cf3e",
-    genres: ["refactoring", "patterns"]
-  },
-  {
-    title: "Practical Object-Oriented Design, An Agile Primer Using Ruby",
-    published: 2012,
-    authorId: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
-    id: "afa5de02-344d-11e9-a414-719c6709cf3e",
-    genres: ["refactoring", "design"]
-  },
-  {
-    title: "Crime and punishment",
-    published: 1866,
-    authorId: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
-    id: "afa5de03-344d-11e9-a414-719c6709cf3e",
-    genres: ["classic", "crime"]
-  },
-  {
-    title: "Demons",
-    published: 1872,
-    authorId: "afa5b6f1-344d-11e9-a414-719c6709cf3e",
-    id: "afa5de04-344d-11e9-a414-719c6709cf3e",
-    genres: ["classic", "revolution"]
-  }
-];
 
 const typeDefs = `
   enum Genre {
@@ -128,17 +50,30 @@ const typeDefs = `
     born: Int
     bookCount: Int
   }
+    
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+    
+  type Token {
+    value: String!
+  }
 
   type Query {
     bookCount: Int!
     authorCount: Int!
     allBooks(author: String, genre: Genre): [Book!]!
     allAuthors: [Author!]!
+    me: User
   }
     
   type Mutation {
     addBook(title: String! published: Int genres: [Genre] author: String!): Book
     editAuthor(name: String setBornTo: Int): Author
+    createUser(username: String! favoriteGenre: String!): User
+    login(username: String! password: String!): Token
   }
 `;
 
@@ -181,6 +116,9 @@ const resolvers = {
         })
       );
       return populatedAuthors;
+    },
+    me: async (root, args, ctx) => {
+      return ctx.currentUser;
     }
   },
   Mutation: {
@@ -248,6 +186,50 @@ const resolvers = {
         });
       }
       return foundAuthor;
+    },
+    createUser: async (root, args) => {
+      const { username } = args;
+
+      if (await User.findOne({ username })) {
+        throw new GraphQLError("That username already has an account", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args.username
+          }
+        });
+      }
+      try {
+        const newUser = new User({ ...args });
+        await newUser.save();
+        return newUser;
+      } catch (error) {
+        throw new GraphQLError("There was an error creating the user", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: args,
+            error
+          }
+        });
+      }
+    },
+    login: async (root, args) => {
+      const { username, password } = args;
+      const user = await User.findOne({ username });
+      if (!user || password !== "secret") {
+        throw new GraphQLError("Wrong credentials", {
+          extensions: {
+            code: "BAD_USER_INPUT"
+          }
+        });
+      }
+      const userForToken = {
+        username,
+        id: user._id
+      };
+      const token = jwt.sign(userForToken, process.env.JWT_SECRET);
+      return {
+        value: token
+      };
     }
   }
 };
@@ -258,7 +240,15 @@ const server = new ApolloServer({
 });
 
 startStandaloneServer(server, {
-  listen: { port: 4001 }
+  listen: { port: 4001 },
+  context: async ({ req, res }) => {
+    const auth = req ? req.headers.authorization : null;
+    if (auth) {
+      const decodedToken = jwt.verify(auth.substring(7), process.env.JWT_SECRET);
+      const currentUser = await User.findById(decodedToken.id);
+      return { currentUser };
+    }
+  }
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`);
 });
