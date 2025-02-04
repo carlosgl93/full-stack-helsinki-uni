@@ -21,9 +21,11 @@ part6/unicafe-redux/node_modules
 part6/redux-anecdotes/node_modules
 part6/query-anecdotes/node_modules
 part7/*/node_modules
-part8/*/node_modules
 part9/*/node_modules
 part9/node_modules
+*/*/.env
+*/*/node_modules
+*/node_modules
 
 
 
