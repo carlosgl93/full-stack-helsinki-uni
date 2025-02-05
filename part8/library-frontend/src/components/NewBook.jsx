@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@apollo/client";
 import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from "../queries";
 
@@ -8,14 +8,15 @@ const NewBook = props => {
   const [published, setPublished] = useState("");
   const [genre, setGenre] = useState("");
   const [genres, setGenres] = useState([]);
+  const [error, setError] = useState("");
+  const ref = useRef();
 
   const [createBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
+    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
+    onError: error => {
+      setError(error.message);
+    }
   });
-
-  if (!props.show) {
-    return null;
-  }
 
   const submit = async event => {
     event.preventDefault();
@@ -37,12 +38,31 @@ const NewBook = props => {
   };
 
   const addGenre = () => {
-    setGenres(genres.concat(genre));
-    setGenre("");
+    if (genre.trim() !== "") {
+      setGenres(genres.concat(genre));
+      setGenre("");
+    }
   };
+
+  useEffect(() => {
+    if (error.length) {
+      ref.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+        inline: "start"
+      });
+    }
+  }, [error]);
+
+  if (!props.show) {
+    return null;
+  }
 
   return (
     <div>
+      <div className="error" ref={ref}>
+        {error}
+      </div>
       <form onSubmit={submit}>
         <div>
           title
