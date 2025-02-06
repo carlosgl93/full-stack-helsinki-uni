@@ -104,18 +104,7 @@ const resolvers = {
     },
     allAuthors: async () => {
       const authors = await Author.find({});
-      const populatedAuthors = await Promise.all(
-        authors.map(a => {
-          const bookCount = Book.countDocuments({
-            author: a._id
-          });
-          return {
-            ...a.toObject(),
-            bookCount
-          };
-        })
-      );
-      return populatedAuthors;
+      return authors;
     },
     me: async (root, args, ctx) => {
       return ctx.currentUser;

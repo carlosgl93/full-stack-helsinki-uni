@@ -6,17 +6,17 @@ const Authors = props => {
   const [authorName, setAuthorName] = useState("");
   const [authorBirthday, setAuthorBirthday] = useState();
 
-  if (!props.show) {
-    return null;
-  }
-
-  const { data, isLoading } = useQuery(ALL_AUTHORS);
+  const { data, loading: isLoading } = useQuery(ALL_AUTHORS);
 
   const [addBirthDay] = useMutation(ADD_BIRTH_DAY, {});
 
   const { allAuthors } = data || {};
 
   if (isLoading) return <p>Loading, please wait</p>;
+
+  if (!props.show) {
+    return null;
+  }
 
   return (
     <div>

@@ -4,11 +4,10 @@ const schema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
-    minLength: 5
+    minLength: 2
   },
   phone: {
     type: String,
-    required: true,
     minLength: 5
   },
   street: {

@@ -5,16 +5,20 @@ import { ALL_PERSONS } from "../queries";
 
 export const flexColumnStyle = {
   display: "flex",
-  flexDirection: "column"
+  flexDirection: "column",
+  gap: "0.66rem"
 };
 
 export const AddPerson = ({ setError }) => {
   const [createPerson] = useMutation(CREATE_PERSON, {
-    refetchQueries: [
-      {
-        query: ALL_PERSONS
-      }
-    ],
+    update: (cache, response) => {
+      cache.updateQuery({ query: ALL_PERSONS }, ({ allPersons }) => {
+        return {
+          allPersons: allPersons.concat(response.data.addPerson)
+        };
+      });
+    },
+
     onError: error => {
       const messages = error.graphQLErrors.map(e => e.message).join("\n");
       setError(messages);
@@ -31,7 +35,7 @@ export const AddPerson = ({ setError }) => {
     await createPerson({
       variables: {
         name,
-        phone,
+        phone: phone.length > 0 ? phone : undefined,
         street,
         city
       }
@@ -56,7 +60,7 @@ export const AddPerson = ({ setError }) => {
         <input type="text" name="street" id="street" onChange={({ target }) => setStreet(target.value)} />
         <label htmlFor="city">City</label>
         <input type="text" name="city" id="city" onChange={({ target }) => setCity(target.value)} />
-        <button type="submit" disabled={!name || !phone}>
+        <button type="submit" disabled={!name}>
           Save
         </button>
       </form>

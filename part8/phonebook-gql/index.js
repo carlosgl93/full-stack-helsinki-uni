@@ -170,7 +170,7 @@ const resolvers = {
       });
 
       if (!user || args.password !== "secret") {
-        throw new GraphQLError("Wrong credentials", {
+        throw new GraphQLError("User not found or wrong credentials", {
           extensions: {
             code: "BAD_USER_INPUT"
           }
