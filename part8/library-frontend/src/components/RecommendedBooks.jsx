@@ -6,7 +6,6 @@ const RecommendedBooks = props => {
   const { data: dataBooks, loading: isLoadingBooks } = useQuery(ALL_BOOKS);
   const { me } = data || {};
   const { favoriteGenre } = me || {};
-  console.log(dataBooks);
 
   if (isLoading || isLoadingBooks) return <p>Loading, please wait</p>;
 

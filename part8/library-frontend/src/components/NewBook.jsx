@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { useMutation } from "@apollo/client";
-import { ADD_BOOK, ALL_AUTHORS, ALL_BOOKS } from "../queries";
+import { gql, useMutation } from "@apollo/client";
+import { ADD_BOOK } from "../queries";
 
-const NewBook = props => {
+const NewBook = ({ show, setPage }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [published, setPublished] = useState("");
@@ -12,15 +12,36 @@ const NewBook = props => {
   const ref = useRef();
 
   const [createBook] = useMutation(ADD_BOOK, {
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
     onError: error => {
       setError(error.message);
+    },
+    onCompleted: () => {
+      if (error.length === 0) {
+        setPage("books");
+      }
+    },
+    update: (cache, { data: { addBook } }) => {
+      cache.modify({
+        fields: {
+          allBooks(existingBooks = []) {
+            const newBookRef = cache.writeFragment({
+              data: addBook,
+              fragment: gql`
+                fragment NewBook on Book {
+                  id
+                  title
+                }
+              `
+            });
+            return [...existingBooks, newBookRef];
+          }
+        }
+      });
     }
   });
 
   const submit = async event => {
     event.preventDefault();
-
     await createBook({
       variables: {
         title,
@@ -45,16 +66,18 @@ const NewBook = props => {
   };
 
   useEffect(() => {
-    if (error.length) {
-      ref.current.scrollIntoView({
+    if (error?.length) {
+      ref?.current?.scrollIntoView({
         behavior: "smooth",
         block: "center",
         inline: "start"
       });
+
+      setTimeout(() => setError(""), 10000);
     }
   }, [error]);
 
-  if (!props.show) {
+  if (!show) {
     return null;
   }
 
